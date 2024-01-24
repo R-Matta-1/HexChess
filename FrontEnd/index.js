@@ -1,11 +1,9 @@
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d");
-//tx.translate(.5, .5)
-
-var colors = ['black','#444','gray']
-const boardHeight =  [6,7,8,9,10, 11,10,9,8,7,6]
+const colors = ['black','#444','gray']
 
 
+//drawing individual Hexagons
 function DrawHex(Xcenter,Ycenter,size,color) {
     ctx.strokeStyle = color
     ctx.fillStyle = color
@@ -19,27 +17,25 @@ ctx.moveTo (Xcenter +  size * Math.cos(0), Ycenter +  size *  Math.sin(0));
     ctx.fill(); 
 }
 
-function drawGrid(BaseX,BaseY,gridSize) {
-let Diameter = Math.sqrt(3)*gridSize
+//Drawing the grid
+function drawGrid(BaseX,BaseY,HexSize,width) {
+let Diameter = Math.sqrt(3)*HexSize
 let hexNum=0
 
 for (let i = 0; i <=1; i++) {
 
-    for (let x = -5 +i; x <=5-i ; x+=2) {
+    for (let x = -width +i; x <=width-i ; x+=2) {
 
-        let total = boardHeight[x+5]
-        let y = 0
-    hexNum =  Math.abs(x) % 3 ;
+        let total = (2 * width)+1 - Math.abs(x)
+        hexNum =  Math.abs(x) % 3 ;
 
-        for ( ; y < total ; y++) {
+        for ( let y = 0 ; y < total ; y++) {
+            let Xcenter = BaseX+(HexSize*1.5*x)
+            let Ycenter = BaseY-((HexSize)*(Math.sin(Math.PI/3)*1))+(Diameter*(y-total/2))
             
-            DrawHex(
-                    BaseX+(gridSize*1.5*x),//x
-                    BaseY-((gridSize)*(Math.sin(Math.PI/3)*1))+((Diameter*(y-total/2))),//y
-                    gridSize+.5,
-            colors[hexNum % 3])
+            DrawHex( Xcenter, Ycenter,HexSize+.5, colors[hexNum % 3])
             hexNum+=2
-            document.getElementById('console').innerHTML += x-y + '    '
+    
         }
    
 }
@@ -47,4 +43,4 @@ for (let i = 0; i <=1; i++) {
 
 }
 
-drawGrid(400,450,40)
+drawGrid(400,450,40,5)
