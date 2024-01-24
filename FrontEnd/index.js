@@ -29,7 +29,7 @@ for (let i = 0; i <=1; i++) {
 
         let total = boardHeight[x+5]
         let y = 0
-    hexNum =  Math.abs(x) % 3*-1 ;
+    hexNum =  Math.abs(x) % 3 ;
 
         for ( ; y < total ; y++) {
             
@@ -38,7 +38,7 @@ for (let i = 0; i <=1; i++) {
                     BaseY-((gridSize)*(Math.sin(Math.PI/3)*1))+((Diameter*(y-total/2))),//y
                     gridSize+.5,
             colors[hexNum % 3])
-            hexNum++
+            hexNum+=2
             document.getElementById('console').innerHTML += x-y + '    '
         }
    
