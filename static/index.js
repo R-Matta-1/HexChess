@@ -3,7 +3,7 @@ console.log('run')
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d");
 
-const colors = ['#212316', '#71764c', '#bdc19f']
+const colors = ['#083218', '#71764c', '#bdc19f']
 //const colors = ['#556edb','#d85186','#bdc19f']
 
 const hexSize = 42

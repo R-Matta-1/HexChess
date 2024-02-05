@@ -1,82 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+ 
+{% extends"main.html" %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HexChess</title>
-</head>
-<style>
-    body {
-  font-family: Verdana, Geneva, sans-serif;
-}
+{% block content %}
+<canvas id="canvas" width="800px" height="800px"></canvas>
 
-#canvas {
-  border: 1px solid #000;
-  width: 400px;
-  height: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  image-rendering: high-quality;
-}
-div {
-  border: #000 solid 1px;
-}
-#sidebar {
-  position: fixed;
-  height: 100%;
-  width: 100px;
-  left: 0%;
-  top: 0px;
-  justify-content: center;
-  padding-left: 10px;
-}
-#main {
-  margin-top: 5px;
-  margin-left: 110px;
-  right: 0%;
-  width: 500;
-}
-.sidebarImg {
-  width: 20px;
-}
+<p id="console">{{id}} playing by {{request.cookies.get('username')}}</p>
 
-
-</style>
-<body>
-
-  <div id="sidebar">
-    <br>
-    <span>
-      <div class="sidebarImg"></div>
-    </span>
-    <p>play</p>
-    <br>
-    </span>
-    <span>
-</span>
-      <p>friends</p>
-      <br>
-      <span>
-        <div class="sidebarImg"></div>
-      </span>
-      <p>info</p>
-      <br>
-      <span>
-        <div class="sidebarImg"></div>
-      </span>
-      <p>login</p>
-  </div>
-  <div id="main">
-    <canvas id="canvas" width="800px" height="800px"></canvas>
-
-    <p id="console">debug</p>
-
-  </div>
-
-</body>
-
-<script   src= "{{  url_for('static', filename='index.js') }}"></script>
-
-</html>
+{% endblock %}
