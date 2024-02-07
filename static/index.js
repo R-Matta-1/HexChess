@@ -1,9 +1,8 @@
 console.log('run')
-
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d");
 
-const colors = ['#083218', '#71764c', '#bdc19f']
+const colors = ['#212316', '#71764c', '#bdc19f']
 //const colors = ['#556edb','#d85186','#bdc19f']
 
 const hexSize = 42
@@ -14,15 +13,20 @@ var hexGrid = []
 var mouseX = 0
 var mouseY = 0
 var mouseDown = false
+var mouseDownInital = true
 ctx.font = "bold 18px Arial "; //for debuging
 
 document.addEventListener('mousedown', () => {
   mouseDown = true;
-  clickEffect()
+  if (mouseDownInital) {
+    clickEffect()
+  }
+  mouseDownInital = false
 })
 
 document.addEventListener('mouseup', () => {
   mouseDown = false
+  mouseDownInital = true
 })
 
 document.addEventListener('mousemove', (event) => {
@@ -31,7 +35,6 @@ document.addEventListener('mousemove', (event) => {
   mouseX = Math.floor(event.clientX - rect.left) * 2
   mouseY = Math.floor(event.clientY - rect.top) * 2
 
-  document.getElementById("console").innerHTML = `${mouseX}, ${mouseY}, ${mouseDown}`
 
 })
 
@@ -90,7 +93,8 @@ function DrawHex(Xcenter, Ycenter, size, color) {
   ctx.closePath();
   ctx.fill();
 }
-//Drawing the grid
+
+//Drawing the grid, place the pieces
 function initGrid(BaseX, BaseY, HexSize, width) {
   hexGrid = []
   let Diameter = Math.sqrt(3) * HexSize
@@ -120,6 +124,7 @@ function initGrid(BaseX, BaseY, HexSize, width) {
   }
 }
 
+//init types and 
 initGrid(400, 475, hexSize, 5)
 hexGrid[5][0].type = -3
 hexGrid[5][2].type = -3
@@ -128,12 +133,55 @@ hexGrid[5][16].type = 3
 hexGrid[5][18].type = 3
 hexGrid[5][20].type = 3
 
+for (let i = 1; i <= 9; i++) {
+
+  
+}
+hexGrid[1][16].type = 6
+hexGrid[2][15].type = 6
+hexGrid[3][14].type = 6
+hexGrid[4][13].type = 6
+hexGrid[5][12].type = 6
+hexGrid[6][13].type = 6
+hexGrid[7][14].type = 6
+hexGrid[8][15].type = 6
+hexGrid[9][16].type = 6
+
 function distance(x1, y1, x2, y2) {
   return Math.sqrt(((x1 - x2) ** 2) + (y1 - y2) ** 2)
 }
 
-function drawGrid() {
+function moveValid(x1,y1,t1,x2,y2,t2) {
+  switch (t1) {
+    case 0:
 
+      return false
+
+    case -1://king
+    case-1:
+      return ((x1+y1)-(x2+y2)<=2)
+    case 2://queen
+    case-2:
+    
+    case 3: //bishop
+    case-3:
+    
+    case 4: //knight
+    case-4:
+    
+    case 5: //rook
+    case -5:
+
+    case 6: //pawn
+    case-6:
+
+    default:
+      
+      return true
+  }
+}
+
+function drawGrid() {
   for (let x = 0; x < hexGrid.length; x++) {
     let Xaxis = hexGrid[x];
     for (let y = 0; y < Xaxis.length; y++) {
@@ -141,9 +189,15 @@ function drawGrid() {
       if (hex === undefined) {
         continue
       }
-if (hex.idY == mouseHex.y && mouseDown) {
+if ( moveValid(mouseHex.x,mouseHex.y,mouseHex.type,hex.idX,hex.idY,hex.type)
+  && mouseDown 
+  && mouseX>0
+  && mouseY>0
+  && mouseX<800
+  && mouseY<800) {
   hex.opt = true
 }
+
       hex.draw(true, 1)
       hex.opt = false
 
@@ -152,7 +206,8 @@ if (hex.idY == mouseHex.y && mouseDown) {
   }
 }
 
-function clickEffect() {
+ function clickEffect(){ 
+  
   for (let x = 0; x < hexGrid.length; x++) {
     let Xaxis = hexGrid[x];
     for (let y = 0; y < Xaxis.length; y++) {
@@ -161,11 +216,13 @@ function clickEffect() {
         continue
       }
 
-      if (distance(hex.x, hex.y, mouseX, mouseY) < hexSize * Math.sqrt(3) / 2 && mouseDown) {
-        hexGrid[x][y].opt = true
+      if (distance(hex.x, hex.y, mouseX, mouseY) < hexSize * Math.sqrt(3) / 2 ) {
         mouseHex.x = hex.idX
         mouseHex.y = hex.idY
+        mouseHex.type = hex.type
+        document.getElementById("console").innerHTML = `${mouseHex.x}, ${mouseHex.y}, ${mouseHex.type}`
 
+      return
       }
       y++
     }
@@ -176,13 +233,14 @@ function clickEffect() {
 
 let mouseHex = {
   x: 0,
-  y: 0
+  y: 0,
+  type:0
 }
 
 function frame() {
-  ctx.clearRect(0, 0, 800, 800)
+  
+  DrawHex(400,400,500,'black')
 
-  clickEffect()
 
   drawGrid()
 
