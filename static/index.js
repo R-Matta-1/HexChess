@@ -1,4 +1,4 @@
-console.log('run')
+console.log('rueen')
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d");
 
@@ -22,12 +22,18 @@ document.addEventListener('mousedown', () => {
   mouseDown = true;
 
   if (mouseDownInital) {
-    clickEffect()
+    findMouseHex()
     
     
-    hexGrid[mouseHex.x][mouseHex.y]. findValid()
+   list= hexGrid[mouseHex.x][mouseHex.y]. findValid()
+
+   for (let i = 0; i < list.length; i++) {
+    let coords = list[i];
+hexGrid[coords[0]][coords[1]].opt=true
+    
+   }
    // hexGrid[mouseHex.x][mouseHex.y]. opt = true
-  document.getElementById("console").innerHTML = `${mouseHex.x}, ${mouseHex.y}, ${mouseHex.type},valid ${hexGrid[mouseHex.x][mouseHex.y].valid}`
+  document.getElementById("console").innerHTML = `${mouseHex.x}, ${mouseHex.y}, ${mouseHex.type}`
 
   }
   mouseDownInital = false
@@ -42,13 +48,27 @@ document.addEventListener('mouseup', () => {
     let selected = hexGrid[mouseHex.x][mouseHex.y].type
     let selectedX = mouseHex.x
     let selectedY = mouseHex.y
-    clickEffect()
+    findMouseHex()
 
-   // if (hexGrid[selectedX][selectedY].opt) {
+    if (hexGrid[mouseHex.x][mouseHex.y].opt) {
 
       hexGrid[mouseHex.x][mouseHex.y].type = selected
       hexGrid[selectedX][selectedY].type = 0
-   // }
+    }
+//after we do this, run through and make sure no one is glowing when mouse is up
+for (let x = 0; x < hexGrid.length; x++) {
+  let Xaxis = hexGrid[x];
+  for (let y = 0; y < Xaxis.length; y++) {
+    let hex = Xaxis[y];
+    if (hex === undefined) {
+      continue
+    }
+hex.opt=false
+
+    y++
+  }
+}
+
   }
 
   mouseUpInitial = false
@@ -73,17 +93,17 @@ class Hex {
     this.colorIndex = colorIndex
     this.opt = false
     this.type = type
-    this.valid = []
+   
   }
 findValid(){
-this.valid = []
+ let awns = []
   switch (this.type) {
     case 0:
-return
+break
      
 
     case -1://king
-    case-1:
+    case 1:
       
     case 2://queen
     case-2:
@@ -102,17 +122,16 @@ return
 
     default:
       
-      this.valid.push([this.x+2,this.y+2])
+      awns.push([this.idX+2,this.idY+2])
   }
-for (let i = 0; i < this.valid.length; i++) {
- hexGrid[this.valid[i][0]][this.valid[i][1]].opt = true;
-  
-}
+return awns
 }
 
   draw(debug, sizeChange) {
+//move to new lcal
+
+
     DrawHex(this.x, this.y, this.size + sizeChange, (this.opt) ? 'red' : colors[this.colorIndex % colors.length], )
-//OPTIMIZE THIS DO NOT CALL THIS =< O(N^2) BECAUSE IF A COLLEGE SEES THAT THEY WILL KILL ME 
     if (this.type != 0) {
 
      let Dwidth = this.size*1.5
@@ -210,12 +229,6 @@ function distance(x1, y1, x2, y2) {
 
 function drawGrid() {
 
-for (let i = 0; i < hexGrid[mouseHex.x][mouseHex.y].valid; i++) {
-  let element = hexGrid[mouseHex.x][mouseHex.y].valid[i];
-  hexGrid[element[0]][element[1]].opt =  true
-}
-
-
   for (let x = 0; x < hexGrid.length; x++) {
     let Xaxis = hexGrid[x];
     for (let y = 0; y < Xaxis.length; y++) {
@@ -232,8 +245,9 @@ for (let i = 0; i < hexGrid[mouseHex.x][mouseHex.y].valid; i++) {
   }
 }
 
- function clickEffect(){ 
+ function findMouseHex(){ 
   
+
   for (let x = 0; x < hexGrid.length; x++) {
     let Xaxis = hexGrid[x];
     for (let y = 0; y < Xaxis.length; y++) {
@@ -241,7 +255,6 @@ for (let i = 0; i < hexGrid[mouseHex.x][mouseHex.y].valid; i++) {
       if (hex === undefined) {
         continue
       }
-hex.opt = false
       if (distance(hex.x, hex.y, mouseX, mouseY) < hexSize * Math.sqrt(3) / 2 ) {
         mouseHex.x = hex.idX
         mouseHex.y = hex.idY
@@ -262,12 +275,10 @@ let mouseHex = {
 }
 
 function frame() {
-  
 
   DrawHex(400,400,400,'black')
 
   drawGrid()
-
 
   requestAnimationFrame(frame)
 }
