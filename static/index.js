@@ -25,15 +25,14 @@ document.addEventListener('mousedown', () => {
     findMouseHex()
     
     
-   list= hexGrid[mouseHex.x][mouseHex.y]. findValid()
+   list= hexGrid[mouseHex.idX][mouseHex.idY]. findValid()
+  // document.getElementById("console").innerHTML = `${mouseHex.idX}, ${mouseHex.idY}, ${mouseHex.type}`
 
    for (let i = 0; i < list.length; i++) {
     let coords = list[i];
 hexGrid[coords[0]][coords[1]].opt=true
     
    }
-   // hexGrid[mouseHex.x][mouseHex.y]. opt = true
-  document.getElementById("console").innerHTML = `${mouseHex.x}, ${mouseHex.y}, ${mouseHex.type}`
 
   }
   mouseDownInital = false
@@ -45,32 +44,29 @@ document.addEventListener('mouseup', () => {
   mouseDownInital = true
 
   if (mouseUpInitial) {
-    let selected = hexGrid[mouseHex.x][mouseHex.y].type
-    let selectedX = mouseHex.x
-    let selectedY = mouseHex.y
+    let selected = hexGrid[mouseHex.idX][mouseHex.idY].type
+    let selectedX = mouseHex.idX
+    let selectedY = mouseHex.idY
     findMouseHex()
 
-    if (hexGrid[mouseHex.x][mouseHex.y].opt) {
+    if (hexGrid[mouseHex.idX][mouseHex.idY].opt) {
 
-      hexGrid[mouseHex.x][mouseHex.y].type = selected
+      hexGrid[mouseHex.idX][mouseHex.idY].type = selected
       hexGrid[selectedX][selectedY].type = 0
     }
-//after we do this, run through and make sure no one is glowing when mouse is up
-for (let x = 0; x < hexGrid.length; x++) {
-  let Xaxis = hexGrid[x];
-  for (let y = 0; y < Xaxis.length; y++) {
-    let hex = Xaxis[y];
-    if (hex === undefined) {
-      continue
+    //after we do this, run through and make sure no one is glowing when mouse is up
+    for (let x = 0; x < hexGrid.length; x++) {
+      let Xaxis = hexGrid[x];
+      for (let y = 0; y < Xaxis.length; y++) {
+        let hex = Xaxis[y];
+        if (hex === undefined) {
+          continue
+        }
+        hex.opt = false ;
+        y++
+      }
     }
-hex.opt=false
-
-    y++
   }
-}
-
-  }
-
   mouseUpInitial = false
 })
 
@@ -100,31 +96,63 @@ findValid(){
   switch (this.type) {
     case 0:
 break
-     
-
     case -1://king
     case 1:
+      
+
       
     case 2://queen
     case-2:
     
     case 3: //bishop
     case-3:
-    
+ let slopeX=-1
+ let slopeY=-3
+
+    for (let i = 0; i < 6; i++) {
+             if (i==0) {  slopeX = -1; slopeY = -3} 
+        else if (i==1) {  slopeX =  1; slopeY = -3} 
+        else if (i==2) {  slopeX = -1; slopeY = 3} 
+        else if (i==3) {  slopeX =  1; slopeY = 3} 
+        else if (i==4) {  slopeX = 2 ; slopeY = 0} 
+        else if (i==5) {  slopeX = -2 ; slopeY = 0} 
+        
+    let y = this.idY + slopeY
+    let x = this.idX +slopeX
+ while ((x<hexGrid.length && x >= 0 )   //check valid
+     && (y<hexGrid[x].length && y >= 0)   //check valid
+     && hexGrid[x][y] != undefined  //check grid
+     && (hexGrid[x][y].type == 0 || !(hexGrid[x][y].type>0)==(this.type>0))  // check type 
+     && (hexGrid[x-slopeX][y-slopeY].type == 0 || hexGrid[x-slopeX][y-slopeY] == hexGrid[this.idX][this.idY] )//check no pass 
+    //     iether the thing before me is blank    or this is checking step1 
+  ) {
+
+  awns.push([x,y])
+
+  y += slopeY
+  x += slopeX
+ }
+document.getElementById('console').innerHTML = `${x},${y}`
+    }
+    case 5: //rook
+    case -5:
+
     case 4: //knight
     case-4:
     
-    case 5: //rook
-    case -5:
+
 
     case 6: //pawn
     case-6:
 
+
+
     default:
       
-      awns.push([this.idX+2,this.idY+2])
+     // awns.push([this.idX+2,this.idY+2])
+      break
   }
-return awns
+  return awns
 }
 
   draw(debug, sizeChange) {
@@ -204,22 +232,18 @@ function initGrid(BaseX, BaseY, HexSize, width) {
 
 //init types and 
 initGrid(400, 475, hexSize, 5)
-hexGrid[5][0].type = -3
-hexGrid[5][2].type = -3
-hexGrid[5][4].type = -3
-hexGrid[5][16].type = 3
-hexGrid[5][18].type = 3
-hexGrid[5][20].type = 3
-
-hexGrid[1][16].type = 6
-hexGrid[2][15].type = 6
-hexGrid[3][14].type = 6
-hexGrid[4][13].type = 6
-hexGrid[5][12].type = 6
-hexGrid[6][13].type = 6
-hexGrid[7][14].type = 6
-hexGrid[8][15].type = 6
-hexGrid[9][16].type = 6
+const StartList=[[1,16,6],[2,15,6],[3,14,6],[4,13,6],[5,12,6],[6,13,6],[7,14,6],[8,15,6],[9,16,6]]
+for (let i = 0; i <= 1; i++) {
+ let flip = i
+for (let k = 0; k < StartList.length; k++) {
+  let rule = StartList[k];
+  if (flip) {rule[0]
+  hexGrid[rule[0]][((rule[1]-10)*-1)+10].type = rule[2] *-1
+  }else{
+  hexGrid[rule[0]][rule[1]].type = rule[2] 
+}
+}
+}
 
 function distance(x1, y1, x2, y2) {
   return Math.sqrt(((x1 - x2) ** 2) + (y1 - y2) ** 2)
@@ -256,8 +280,8 @@ function drawGrid() {
         continue
       }
       if (distance(hex.x, hex.y, mouseX, mouseY) < hexSize * Math.sqrt(3) / 2 ) {
-        mouseHex.x = hex.idX
-        mouseHex.y = hex.idY
+        mouseHex.idX = hex.idX
+        mouseHex.idY = hex.idY
         mouseHex.type = hex.type
 
       }
@@ -269,8 +293,8 @@ function drawGrid() {
 
 
 let mouseHex = {
-  x: 5,
-  y: 10,
+  idX: 5,
+  idY: 10,
   type:0
 }
 
