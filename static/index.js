@@ -1,309 +1,516 @@
-console.log('rueen')
-const canvas = document.getElementById("canvas")
+console.log("rueen");
+const mode = document.getElementById("gameMode").innerHTML;
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const colors = ['#212316', '#71764c', '#bdc19f']
-//const colors = ['#556edb','#d85186','#bdc19f']
+var Bcanvas;
+var Bctx;
+if (mode=='local') {
+   Bcanvas = document.getElementById("blackCanvas");
+  Bctx= document.getElementById("blackCanvas").getContext("2d")
+Bctx.font = "bold 18px Arial "; //for debuging
 
-const hexSize = 42
-const img = new Image()
-      img.src = 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Chess_Pieces_Sprite.svg'
-var hexGrid = [] 
+}
 
-var mouseX = 0
-var mouseY = 0
-var mouseDown = false
-var mouseDownInital = true
-var mouseUpInitial = false
+
+//const colors = ["#212316", "#71764c", "#bdc19f"];
+// const colors = ['#ccc', '#fff', '#999']                     //slvr
+const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
+//const colors = ['rgb(0, 43, 44)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //ocianic
+//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
+
+const hexSize = 42;
+const img = new Image();
+img.src =
+  "https://upload.wikimedia.org/wikipedia/commons/b/b2/Chess_Pieces_Sprite.svg";
+var hexGrid = [];
+
+//var yourTurn = 
+var player = 'w'
+var mouseX = 0;
+var mouseY = 0;
+var mouseDown = false;
+var mouseDownInital = true;
+var mouseUpInitial = false;
 ctx.font = "bold 18px Arial "; //for debuging
 
-document.addEventListener('mousedown', () => {
-  mouseUpInitial = true
+document.addEventListener("mousedown", () => {
+  mouseUpInitial = true;
   mouseDown = true;
 
   if (mouseDownInital) {
-    findMouseHex()
-    
-    
-   list= hexGrid[mouseHex.idX][mouseHex.idY]. findValid()
-  // document.getElementById("console").innerHTML = `${mouseHex.idX}, ${mouseHex.idY}, ${mouseHex.type}`
+    findMouseHex();
 
-   for (let i = 0; i < list.length; i++) {
-    let coords = list[i];
-hexGrid[coords[0]][coords[1]].opt=true
-    
-   }
+    list = hexGrid[mouseHex.idX][mouseHex.idY].findValid();
+    // document.getElementById("console").innerHTML = `${mouseHex.idX}, ${mouseHex.idY}, ${mouseHex.type}`
 
+    for (let i = 0; i < list.length; i++) {
+      let coords = list[i];
+      hexGrid[coords[0]][coords[1]].opt = true;
+    }
   }
-  mouseDownInital = false
+  mouseDownInital = false;
+});
 
-})
-
-document.addEventListener('mouseup', () => {
-  mouseDown = false
-  mouseDownInital = true
+document.addEventListener("mouseup", () => {
+  mouseDown = false;
+  mouseDownInital = true;
 
   if (mouseUpInitial) {
-    let selected = hexGrid[mouseHex.idX][mouseHex.idY].type
-    let selectedX = mouseHex.idX
-    let selectedY = mouseHex.idY
-    findMouseHex()
+    let selected = hexGrid[mouseHex.idX][mouseHex.idY].type;
+    let selectedX = mouseHex.idX;
+    let selectedY = mouseHex.idY;
+    findMouseHex();
 
-    if (hexGrid[mouseHex.idX][mouseHex.idY].opt) {
-
-      hexGrid[mouseHex.idX][mouseHex.idY].type = selected
-      hexGrid[selectedX][selectedY].type = 0
+       let newHex = hexGrid[mouseHex.idX][mouseHex.idY];
+    if (newHex.opt &&
+      (((Math.abs(selected) == selected)? 'w':'b') == player )) {
+      // new turn move
+      hexGrid[mouseHex.idX][mouseHex.idY].type = selected;
+      hexGrid[selectedX][selectedY].type = 0;
+      newTurn(selectedX, selectedY, mouseHex.idX, mouseHex.idY);
     }
+
     //after we do this, run through and make sure no one is glowing when mouse is up
     for (let x = 0; x < hexGrid.length; x++) {
       let Xaxis = hexGrid[x];
       for (let y = 0; y < Xaxis.length; y++) {
         let hex = Xaxis[y];
         if (hex === undefined) {
-          continue
+          continue;
         }
-        hex.opt = false ;
-        y++
+        hex.opt = false;
+        y++;
       }
     }
   }
-  mouseUpInitial = false
-})
+  mouseUpInitial = false;
+});
 
-document.addEventListener('mousemove', (event) => {
-
+document.addEventListener("mousemove", (event) => {
   let rect = canvas.getBoundingClientRect();
-  mouseX = Math.floor(event.clientX - rect.left) * 2
-  mouseY = Math.floor(event.clientY - rect.top) * 2
+  mouseX = Math.floor(event.clientX - rect.left) * 2;
+  mouseY = Math.floor(event.clientY - rect.top) * 2;
 
+  if (mode == 'local') {
+  if (player == 'b') {
+     rect = Bcanvas.getBoundingClientRect();
+     mouseX = Math.floor(event.clientX - rect.left) * 2;
+     mouseY = (((Math.floor(event.clientY - rect.top) * 2)-400 )*-1 )+400;
+  }
+  }
+});
 
-})
+function newTurn(oldX, oldY, newX, newY) {
+  (player == 'w')?player='b': player = 'w';
+  if (mode == "local") {
+  
+  for (let x = 0; x < hexGrid.length; x++) {
+      let Xaxis = hexGrid[x];
+      for (let y = 0; y < Xaxis.length; y++) {
+        let hex = Xaxis[y];
+        if (hex === undefined) {
+          continue;
+        }
+        hex.opt = false;
+        y++;
+      }
+    }
+    
+  } else {
+    // i need to learn AJAX or smth here
+  }
+}
+
+function checkGrid(x, y, type) {
+  return (
+    x < hexGrid.length &&
+    x >= 0 && //check valid
+    y < hexGrid[x].length &&
+    y >= 0 && //check valid
+    hexGrid[x][y] != undefined && //check grid
+    (hexGrid[x][y].type == 0 || !(hexGrid[x][y].type > 0) == type > 0)
+  );
+}
+const bishopSlope = [
+  [-1, -3],
+  [1, -3],
+  [-1, 3],
+  [1, 3],
+  [2, 0],
+  [-2, 0],
+];
+const rookSlope = [
+  [0, 2],
+  [0, -2],
+  [-1, 1],
+  [1, 1],
+  [-1, -1],
+  [1, -1],
+];
+const knightSlope = [
+[-1,-5],
+[1,5],
+[-1,5],
+[1,-5],
+[3,1],
+[3,-1],
+[-3,1],
+[-3,-1],
+[2,4],
+[2,-4],
+[-2,4],
+[-2,-4]
+]
 
 class Hex {
-  constructor(x, y, idX, idY, size,type, colorIndex) {
-    this.x = x
-    this.y = y
-    this.idX = idX
-    this.idY = idY
-    this.size = size
-    this.colorIndex = colorIndex
-    this.opt = false
-    this.type = type
-   
+  constructor(x, y, idX, idY, size, type, colorIndex) {
+    this.x = x;
+    this.y = y;
+    this.idX = idX;
+    this.idY = idY;
+    this.size = size;
+    this.colorIndex = colorIndex;
+    this.opt = false;
+    this.type = type;
   }
-findValid(){
- let awns = []
-  switch (this.type) {
-    case 0:
-break
-    case -1://king
-    case 1:
-      
+  findValid() {
+    let awns = [];
+    let slopeX = 0;
+    let slopeY = 0;
+    let isFirst = false
 
-      
-    case 2://queen
-    case-2:
-    
-    case 3: //bishop
-    case-3:
- let slopeX=-1
- let slopeY=-3
+    switch (this.type) {
+      case 0:
+        break;
+      case -1: //king
+      case 1:
+        for (let i = 0; i < 2; i++) {
+          let list = (i==0)?  rookSlope:bishopSlope;
+          for (let k = 0; k < list.length; k++) {
+            slopeX = list[k][0];
+            slopeY = list[k][1];
+            let y = this.idY + slopeY;
+            let x = this.idX + slopeX;
+            if(checkGrid(x,y,this.type)){// check type 
+              awns.push([x,y])}
+          }
+        }
+        break;
+      case 2: //queen
+      case -2:
 
-    for (let i = 0; i < 6; i++) {
-             if (i==0) {  slopeX = -1; slopeY = -3} 
-        else if (i==1) {  slopeX =  1; slopeY = -3} 
-        else if (i==2) {  slopeX = -1; slopeY = 3} 
-        else if (i==3) {  slopeX =  1; slopeY = 3} 
-        else if (i==4) {  slopeX = 2 ; slopeY = 0} 
-        else if (i==5) {  slopeX = -2 ; slopeY = 0} 
+      case 3: //bishop
+      case -3:
+        for (let i = 0; i < bishopSlope.length; i++) {
+          slopeX = bishopSlope[i][0];
+          slopeY = bishopSlope[i][1];
+          let y = this.idY + slopeY;
+          let x = this.idX + slopeX;
+          while (
+            checkGrid(x, y, this.type) && // check type
+            (hexGrid[x - slopeX][y - slopeY].type == 0 ||
+              hexGrid[x - slopeX][y - slopeY] == hexGrid[this.idX][this.idY]) //check no pass
+            //     iether the thing before me is blank    or this is checking step1
+          ) {
+            awns.push([x, y]);
+            y += slopeY;
+            x += slopeX;
+          }
+          document.getElementById("console").innerHTML = `${x},${y}`;
+        }
+        if (Math.abs(this.type) == 3) {
+          break
+        }
+      case 5: //rook
+      case -5:
+        for (let i = 0; i < rookSlope.length; i++) {
+          slopeX = rookSlope[i][0];
+          slopeY = rookSlope[i][1];
+          let y = this.idY + slopeY;
+          let x = this.idX + slopeX;
+          while (
+            checkGrid(x, y, this.type) && // check type
+            (hexGrid[x - slopeX][y - slopeY].type == 0 ||
+              hexGrid[x - slopeX][y - slopeY] == hexGrid[this.idX][this.idY]) //check no pass
+            //     iether the thing before me is blank    or this is checking step1
+          ) {
+            awns.push([x, y]);
+            y += slopeY;
+            x += slopeX;
+          }
+        }
         
-    let y = this.idY + slopeY
-    let x = this.idX +slopeX
- while ((x<hexGrid.length && x >= 0 )   //check valid
-     && (y<hexGrid[x].length && y >= 0)   //check valid
-     && hexGrid[x][y] != undefined  //check grid
-     && (hexGrid[x][y].type == 0 || !(hexGrid[x][y].type>0)==(this.type>0))  // check type 
-     && (hexGrid[x-slopeX][y-slopeY].type == 0 || hexGrid[x-slopeX][y-slopeY] == hexGrid[this.idX][this.idY] )//check no pass 
-    //     iether the thing before me is blank    or this is checking step1 
-  ) {
-
-  awns.push([x,y])
-
-  y += slopeY
-  x += slopeX
- }
-document.getElementById('console').innerHTML = `${x},${y}`
-    }
-    case 5: //rook
-    case -5:
-
-    case 4: //knight
-    case-4:
-    
-
-
-    case 6: //pawn
-    case-6:
-
-
-
-    default:
+          break
+      case 4: //knight
+      case -4:
       
-     // awns.push([this.idX+2,this.idY+2])
-      break
-  }
-  return awns
+    for (let i = 0; i < knightSlope.length; i++) {
+      slopeX = knightSlope[i][0]
+      slopeY = knightSlope[i][1]
+          let y = this.idY + slopeY
+          let x = this.idX +slopeX
+      if(checkGrid(x,y,this.type)){// check type 
+        awns.push([x,y])
+        y += slopeY
+        x += slopeX
+       }}
+       break;
+      case 6: //pawn
+       slopeY =-2
+      case -6:
+        if (slopeY == 0 ) slopeY = 2;
+if (this.idY+slopeY < 0 || this.idY+slopeY > hexGrid[this.idX].length) {
+  this.type = (this.type < 0 )? -2: 2;
+  this.findValid()
+  break
 }
+isFirst = ((this.type >0)? Math.abs(5-this.idX) - this.idY == -12 :Math.abs(5-this.idX) + this.idY == 8)
+
+       if (checkGrid(this.idX,this.idY+slopeY,hexGrid[this.idX][this.idY+slopeY].type) ) {
+        awns.push([this.idX,this.idY+slopeY])
+       }
+       if (checkGrid(this.idX+1,this.idY+(slopeY/2),this.type) ) {
+       if (hexGrid[this.idX+1][this.idY+(slopeY/2)].type != 0) {
+        awns.push([this.idX+1,this.idY+(slopeY/2)])
+       }}
+       if (checkGrid(this.idX-1,this.idY+slopeY/2,this.type) ) {
+        if (hexGrid[this.idX-1][this.idY+(slopeY/2)].type != 0) {
+          awns.push([this.idX-1,this.idY+(slopeY/2)])
+         }
+       }
+if (isFirst) {
+  if (checkGrid(this.idX,this.idY+(slopeY*2),hexGrid[this.idX][this.idY+(slopeY*2)].type) ) {
+    awns.push([this.idX,this.idY+(slopeY*2)])
+}}
+       break
+      default:
+        // awns.push([this.idX+2,this.idY+2])
+        break;
+    }
+    return awns;
+  }
 
   draw(debug, sizeChange) {
-//move to new lcal
-
-
-    DrawHex(this.x, this.y, this.size + sizeChange, (this.opt) ? 'red' : colors[this.colorIndex % colors.length], )
+    DrawHex(ctx,
+      this.x,
+      this.y,
+      this.size + sizeChange,
+      this.opt ? "red" : colors[this.colorIndex % colors.length],
+    );
     if (this.type != 0) {
+      let Dwidth = this.size * 1.5;
 
-     let Dwidth = this.size*1.5
-
-
-      ctx.drawImage(img,
-       ( Math.abs(this.type)-1) * 45, (this.type < 0) ? 45 : 0, //S,X,Y
-        45, 45,                                            //S,W,H
-        this.x - Dwidth/2 , this.y - Dwidth/2 ,                 //D,X,Y
-        Dwidth , Dwidth)                                          //D,W,H
+      ctx.drawImage(
+        img,
+        (Math.abs(this.type) - 1) * 45,
+        this.type < 0 ? 45 : 0, //S,X,Y
+        45,
+        45, //S,W,H
+        this.x - Dwidth / 2,
+        this.y - Dwidth / 2, //D,X,Y
+        Dwidth,
+        Dwidth,
+      ); //D,W,H
     }
-
 
     if (debug) {
-      ctx.fillStyle = "white"
-      ctx.fillText(`${this.idX},${this.idY}`, this.x - this.size / 3, this.y + this.size / 2 + 10)
-
+      ctx.fillStyle = "white";
+      ctx.fillText(
+        `${this.idX},${this.idY}`,
+        this.x - this.size / 3,
+        this.y + this.size / 2 + 10,);
     }
 
+    if (mode == 'local') {
+      this.y = ((this.y-400)*-1)+400
+      DrawHex(Bctx,
+        this.x,
+        this.y,
+        this.size + sizeChange,
+        this.opt ? "red" : colors[this.colorIndex % colors.length],
+      );
+      if (this.type != 0) {
+        let Dwidth = this.size * 1.5;
+  
+        Bctx.drawImage(
+          img,
+          (Math.abs(this.type) - 1) * 45,
+          this.type < 0 ? 45 : 0, //S,X,Y
+          45,
+          45, //S,W,H
+          this.x - Dwidth / 2,
+          this.y - Dwidth / 2, //D,X,Y
+          Dwidth,
+          Dwidth,
+        ); //D,W,H
+      }
+  
+      if (debug) {
+        Bctx.fillStyle = "white";
+        Bctx.fillText(
+          `${this.idX},${this.idY}`,
+          this.x - this.size / 3,
+          this.y + this.size / 2 + 10,);
+      }
+
+      this.y = ((this.y-400)*-1)+400
+    }
   }
 
 
 }
 
-
-
 //drawing individual Hexagons
-function DrawHex(Xcenter, Ycenter, size, color) {
-  ctx.strokeStyle = color
-  ctx.fillStyle = color
-  ctx.beginPath();
-  ctx.moveTo(Xcenter + size * Math.cos(0), Ycenter + size * Math.sin(0));
+function DrawHex(context,Xcenter, Ycenter, size, color) {
+  context.strokeStyle = color;
+  context.fillStyle = color;
+  context.beginPath();
+  context.moveTo(Xcenter + size * Math.cos(0), Ycenter + size * Math.sin(0));
   for (let i = 1; i < 6; i++) {
-    ctx.lineTo(Xcenter + size * Math.cos(i * 2 * Math.PI / 6),
-      Ycenter + size * Math.sin(i * 2 * Math.PI / 6));
+    context.lineTo(
+      Xcenter + size * Math.cos((i * 2 * Math.PI) / 6),
+      Ycenter + size * Math.sin((i * 2 * Math.PI) / 6),
+    );
   }
-  ctx.closePath();
-  ctx.fill();
+  context.closePath();
+  context.fill();
 }
 
 //Drawing the grid, place the pieces
 function initGrid(BaseX, BaseY, HexSize, width) {
-  hexGrid = []
-  let Diameter = Math.sqrt(3) * HexSize
-  let hexNum = 0
+  hexGrid = [];
+  let Diameter = Math.sqrt(3) * HexSize;
+  let hexNum = 0;
 
   for (let i = 0; i <= 1; i++) {
     for (let x = -width + i; x <= width - i; x += 2) {
-      hexGrid[x + width] = []
-      let total = (2 * width) + 1 - Math.abs(x)
+      hexGrid[x + width] = [];
+      let total = 2 * width + 1 - Math.abs(x);
       hexNum = Math.abs(x) % 3;
 
       for (let y = 0; y < total; y++) {
-        let Xcenter = BaseX + (HexSize * 1.5 * x)
-        let Ycenter = BaseY - ((HexSize) * (Math.sin(Math.PI / 3) * 1)) + (Diameter * (y - total / 2))
-        let idX = x + width
-        let idY = 2 * y + Math.abs(x)
+        let Xcenter = BaseX + HexSize * 1.5 * x;
+        let Ycenter =
+          BaseY -
+          HexSize * (Math.sin(Math.PI / 3) * 1) +
+          Diameter * (y - total / 2);
+        let idX = x + width;
+        let idY = 2 * y + Math.abs(x);
 
-        let MakeHex = new Hex(Xcenter, Ycenter, idX, idY, HexSize,0, hexNum % 3)
-        hexGrid[idX][idY] = MakeHex
-        DrawHex(Xcenter, Ycenter, HexSize + .5, colors[hexNum % colors.length])
-        ctx.fillStyle = "white"
-        ctx.fillText(`${idX},${idY}`, Xcenter - 20, Ycenter + HexSize - 20)
-        hexNum += 2
+        let MakeHex = new Hex(
+          Xcenter,
+          Ycenter,
+          idX,
+          idY,
+          HexSize,
+          0,
+          hexNum % 3,
+        );
+        hexGrid[idX][idY] = MakeHex;
 
+        ctx.fillStyle = "white";
+        ctx.fillText(`${idX},${idY}`, Xcenter - 20, Ycenter + HexSize - 20);
+        hexNum += 2;
       }
     }
   }
 }
 
-//init types and 
-initGrid(400, 475, hexSize, 5)
-const StartList=[[1,16,6],[2,15,6],[3,14,6],[4,13,6],[5,12,6],[6,13,6],[7,14,6],[8,15,6],[9,16,6]]
+//init types and
+initGrid(400, 475, hexSize, 5); //king1, queen2, bishop3, rook5,horse4 pawn6
+const StartList = [
+  [1, 16, 6],
+  [2, 15, 6],
+  [3, 14, 6],
+  [4, 13, 6],
+  [5, 12, 6],
+  [6, 13, 6],
+  [7, 14, 6],
+  [8, 15, 6],
+  [9, 16, 6],
+  [2, 17, 5],
+  [8, 17, 5],
+  [3, 18, 4],
+  [7, 18, 4],
+  [5, 16, 3],
+  [5, 18, 3],
+  [5, 20, 3],
+  [4, 19, 2],
+  [6, 19, 1],
+];
 for (let i = 0; i <= 1; i++) {
- let flip = i
-for (let k = 0; k < StartList.length; k++) {
-  let rule = StartList[k];
-  if (flip) {rule[0]
-  hexGrid[rule[0]][((rule[1]-10)*-1)+10].type = rule[2] *-1
-  }else{
-  hexGrid[rule[0]][rule[1]].type = rule[2] 
-}
-}
+  let flip = i;
+  for (let k = 0; k < StartList.length; k++) {
+    let rule = StartList[k];
+    if (flip) {
+      rule[0];
+      hexGrid[rule[0]][(rule[1] - 10) * -1 + 10].type = rule[2] * -1;
+    } else {
+      hexGrid[rule[0]][rule[1]].type = rule[2];
+    }
+  }
 }
 
 function distance(x1, y1, x2, y2) {
-  return Math.sqrt(((x1 - x2) ** 2) + (y1 - y2) ** 2)
+  return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
 }
-
-
 
 function drawGrid() {
-
   for (let x = 0; x < hexGrid.length; x++) {
     let Xaxis = hexGrid[x];
     for (let y = 0; y < Xaxis.length; y++) {
       let hex = Xaxis[y];
       if (hex === undefined) {
-        continue
+        continue;
       }
 
+      hex.draw(true, 1);
 
-      hex.draw(true, 1)
-
-      y++
+      y++;
     }
   }
 }
 
- function findMouseHex(){ 
-  
-
+function findMouseHex() {
   for (let x = 0; x < hexGrid.length; x++) {
     let Xaxis = hexGrid[x];
     for (let y = 0; y < Xaxis.length; y++) {
       let hex = Xaxis[y];
       if (hex === undefined) {
-        continue
+        continue;
       }
-      if (distance(hex.x, hex.y, mouseX, mouseY) < hexSize * Math.sqrt(3) / 2 ) {
-        mouseHex.idX = hex.idX
-        mouseHex.idY = hex.idY
-        mouseHex.type = hex.type
-
+      if (
+        distance(hex.x, hex.y, mouseX, mouseY) <
+        (hexSize * Math.sqrt(3)) / 2
+      ) {
+        mouseHex.idX = hex.idX;
+        mouseHex.idY = hex.idY;
+        mouseHex.type = hex.type;
       }
-      y++
+      y++;
     }
   }
-
 }
-
 
 let mouseHex = {
   idX: 5,
   idY: 10,
-  type:0
-}
+  type: 0,
+};
 
 function frame() {
+  ctx.clearRect(0, 0, 800, 800);
 
-  DrawHex(400,400,400,'black')
+  if (mode == 'local') {
+    
+    Bctx.clearRect(0, 0, 800, 800);
+  }
 
-  drawGrid()
+  //DrawHex(400, 400, 400, "black");
 
-  requestAnimationFrame(frame)
+  drawGrid();
+
+  requestAnimationFrame(frame);
 }
-frame()
+frame();

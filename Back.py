@@ -19,31 +19,39 @@ app.secret_key = os.environ.get('key')
 
 @app.route('/')
 def root():
-    response = make_response(redirect(url_for('login')))
+    response = make_response(redirect(url_for('login', message = 'to start, please make a acount. iether a name or real acount would work')))
     response.set_cookie('id','',max_age=0)
     response.set_cookie('username','',max_age=0)
     return response
 
-@app.route("/play")
-def home():
-    if "username" in request.cookies:
-        return render_template('index.html',id=request.cookies.get('id'))
-    return redirect('/login')
+@app.route("/play/<mode>")
+def play(mode):
+    if "username" not in request.cookies and mode != "local":
+        return redirect(url_for("login",message="need an acount to play"))
+    
+    return render_template('index.html',mode = mode, id=request.cookies.get('id'))
 
-@app.route("/login",methods=['GET','POST'])
-def login():
+@app.route("/select")
+def select():
+    return render_template('selectGmode.html')
+
+
+@app.route("/login/<message>",methods=['GET','POST'])
+def login(message):
     if request.method == 'POST':
-        response = make_response( redirect(url_for('home')))
+        response = make_response( redirect(url_for('select')))
         username  = request.form['username']
-        if len(username) >10 :
-            response.set_cookie('username','')
-            response.set_cookie('id',''  ,)
-            return redirect(url_for('login'))
-        else:
+        if len(username) <= 16 and len(username)>5 and username.isalnum() :
             response.set_cookie('username',username ,httponly=True)
             response.set_cookie('id',uuid4().hex    ,httponly=True)
             return response
-    return render_template('login.html')
+        else:        
+            response.set_cookie('username','')
+            response.set_cookie('id',''  )
+            return redirect(url_for('login',message = "name needs to be less then 10 and have no special characters or spaces "))
+
+
+    return render_template('login.html',message=message)
 
 @app.route('/info')
 def info():
@@ -53,7 +61,8 @@ def info():
 def friends():
     if 'username' in request.cookies:
         return 'friends menue'
-    return redirect(login)
+    else:
+        return redirect(url_for('login',message = 'need acount to friend'))
 
 @app.route('/info/howToPlay')
 def me():

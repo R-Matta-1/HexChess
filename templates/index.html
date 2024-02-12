@@ -1,8 +1,17 @@
  
 {% extends"main.html" %}
-
 {% block content %}
+<p id="gameMode">{{mode}}</p>
+{% if mode =='local'%}
+<div class =  'canvasHolder'>
+
+{% endif %}
 <canvas id="canvas" width="800px" height="800px"></canvas>
+
+{% if mode =='local'%}
+<canvas id="blackCanvas"   width="800px" height="800px"></canvas>
+</div>
+{% endif %}
 
 <p id="console">{{id}} playing by {{request.cookies.get('username')}}</p>
 

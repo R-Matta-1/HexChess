@@ -1,0 +1,11 @@
+ 
+{% extends"main.html" %}
+
+{% block content %}
+<h1>select a gameMode</h1>
+<a href="{{url_for('play',mode='local')}}">local</a> <br>
+<a href="{{url_for('play',mode='public')}}">public</a><br>
+<a href="{{url_for('play',mode='friend_link')}}">friend</a>
+
+
+{% endblock %}

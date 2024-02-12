@@ -4,7 +4,11 @@
 <form method="post">
     <label for="username">Enter your username</label>
     <input type="text" id="username" name="username" required />
-    <button type="submit">Submit</button
+    <button type="submit">Submit</button>
 </form>
+
+{% if message %}
+<p class = 'error'>{{ message }}</p>
+{% endif %}
 
 {% endblock %}
