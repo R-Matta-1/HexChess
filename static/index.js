@@ -2,7 +2,7 @@ console.log("rueen");
 const mode = document.getElementById("gameMode").innerHTML;
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
+const debug = true
 var Bcanvas;
 var Bctx;
 if (mode=='local') {
@@ -35,6 +35,9 @@ var mouseUpInitial = false;
 ctx.font = "bold 18px Arial "; //for debuging
 
 document.addEventListener("mousedown", () => {
+  if (mouseX < 0 || mouseX > 800 ||mouseY < 0 || mouseY > 800) {
+    return
+  }
   mouseUpInitial = true;
   mouseDown = true;
 
@@ -291,49 +294,20 @@ if (isFirst) {
     return awns;
   }
 
-  draw(debug, sizeChange) {
-    DrawHex(ctx,
-      this.x,
-      this.y,
-      this.size + sizeChange,
-      this.opt ? "red" : colors[this.colorIndex % colors.length],
-    );
-    if (this.type != 0) {
-      let Dwidth = this.size * 1.5;
-
-      ctx.drawImage(
-        img,
-        (Math.abs(this.type) - 1) * 45,
-        this.type < 0 ? 45 : 0, //S,X,Y
-        45,
-        45, //S,W,H
-        this.x - Dwidth / 2,
-        this.y - Dwidth / 2, //D,X,Y
-        Dwidth,
-        Dwidth,
-      ); //D,W,H
-    }
-
-    if (debug) {
-      ctx.fillStyle = "white";
-      ctx.fillText(
-        `${this.idX},${this.idY}`,
-        this.x - this.size / 3,
-        this.y + this.size / 2 + 10,);
-    }
-
-    if (mode == 'local') {
+  draw(context,flip, sizeChange) {
+      if (flip){
       this.y = ((this.y-400)*-1)+400
-      DrawHex(Bctx,
+      }
+      DrawHex(context,
         this.x,
         this.y,
         this.size + sizeChange,
-        this.opt ? "red" : colors[this.colorIndex % colors.length],
+        colors[this.colorIndex % colors.length],
       );
       if (this.type != 0) {
         let Dwidth = this.size * 1.5;
   
-        Bctx.drawImage(
+        context.drawImage(
           img,
           (Math.abs(this.type) - 1) * 45,
           this.type < 0 ? 45 : 0, //S,X,Y
@@ -347,15 +321,19 @@ if (isFirst) {
       }
   
       if (debug) {
-        Bctx.fillStyle = "white";
-        Bctx.fillText(
+        context.fillStyle = "white";
+        context.fillText(
           `${this.idX},${this.idY}`,
           this.x - this.size / 3,
           this.y + this.size / 2 + 10,);
       }
-
-      this.y = ((this.y-400)*-1)+400
-    }
+      if (this.opt == true) {
+        DrawHex(context,this.x,this.y,this.size/2,'#777')
+      }
+      if (flip){
+        this.y = ((this.y-400)*-1)+400
+        }
+    
   }
 
 
@@ -465,7 +443,10 @@ function drawGrid() {
         continue;
       }
 
-      hex.draw(true, 1);
+      hex.draw(ctx,false, 1);
+      if (mode == 'local') {
+        hex.draw(Bctx,true, 1);
+      }
 
       y++;
     }
@@ -505,9 +486,10 @@ function frame() {
   if (mode == 'local') {
     
     Bctx.clearRect(0, 0, 800, 800);
+  (player == 'w')? DrawHex(ctx,400, 400, 400, "black"):DrawHex(Bctx,400, 400, 400, "black");
+
   }
 
-  //DrawHex(400, 400, 400, "black");
 
   drawGrid();
 
