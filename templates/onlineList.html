@@ -1,0 +1,38 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<table border="black 1px solid">
+
+    
+    
+<button id = 'GenButton'> generate more</button>
+
+<table name = "table" border="black 1px solid">
+<tr><td>name</td><td>time</td><td><button>join</button></td></tr>
+<tr><td>name</td><td>time</td><td><button>join</button></td></tr>
+<tr><td>name</td><td>time</td><td><button>join</button></td></tr>
+<tr><td>name</td><td>time</td><td><button>join</button></td></tr>
+<tr><td>name</td><td>time</td><td><button>join</button></td></tr>
+</table>
+
+{% if mode == 'create' %}
+<div id= 'gameCreator'>
+
+    <form method="post">
+<input type="text" name="name" id="nameInput">
+
+<select name="time" id="cars">
+    <option value="60">1 minute </option>
+    <option value="120">2 minute </option>
+    <option value="300">5 minute </option>
+    <option value="600">10 minute </option>
+  </select>
+
+<input type="submit" value="submit">
+    </form>
+
+</div>
+
+{%endif%}
+{% endblock %}

@@ -24,6 +24,18 @@ def root():
     response.set_cookie('username','',max_age=0)
     return response
 
+@app.route('/onlineList/<mode>', methods = ['GET','POST'])
+def onlineList(mode):
+    if "username" not in request.cookies :
+        return redirect(url_for("login",message="need an acount to play"))
+    if request.method == 'POST':
+        #mongo mongo mongo
+        print(request.form['name'])
+        print(request.form['time'])
+        return render_template('onlineList.html',mode = 'find' )
+        
+    return render_template('onlineList.html',mode = mode)
+
 @app.route("/play/<mode>")
 def play(mode):
     if "username" not in request.cookies and mode != "local":
@@ -48,7 +60,7 @@ def login(message):
         else:        
             response.set_cookie('username','')
             response.set_cookie('id',''  )
-            return redirect(url_for('login',message = "name needs to be less then 10 and have no special characters or spaces "))
+            return redirect(url_for('login',message = "more then 5, less then 16, valid for .isalnum"))
 
 
     return render_template('login.html',message=message)

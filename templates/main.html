@@ -8,6 +8,9 @@
   <link rel="icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}">
 </head>
 <style>
+  #GenButton {
+    height:40px;
+  }
    body {
     font-family: Verdana, Geneva, sans-serif;
     background-color: #121;
@@ -28,7 +31,21 @@ display: flex;
     display: block;
     image-rendering: high-quality;
   }
-
+  td{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: rgb(165, 229, 165);
+  }
+  #gameCreator{
+    border:solid black;
+      height: 500px;
+        width: 500px;
+            top:50%;
+          left:50%;
+            margin:10px;
+  }
   .sideImg {
     height: 50px;
     margin: 10px;
@@ -55,19 +72,47 @@ display: flex;
   font-size: smaller;
   color:red;
 }
+#gameMode{
+  display: none;
+}
   #main {
+    padding: 10px;
     background-color: #797;
     margin-top: 5px;
     margin-left: 110px;
     right: 0%;
     width: 500;
-    min-height: 400px
+    min-height: 400px;
+        display: flex;
+  justify-content: center;
   }
 
   .sidebarImg {
     width: 20px;
   }
-  
+  table{
+    height:50%
+  }
+  #time{
+border: #000 solid;
+width: 100px;
+height: 50px;
+  }
+  #timerWhite{
+    background-color: rgb(207, 248, 207);
+    color: rgb(30, 42, 30);
+
+height: 25px;
+text-align: center;
+  }
+  #timerBlack{
+height: 25px;
+background-color: rgb(30, 42, 30);
+color: rgb(207, 248, 207);
+text-align: center;
+
+
+  }
 </style>
 
 <body>
