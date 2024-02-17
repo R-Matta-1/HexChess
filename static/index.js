@@ -2,7 +2,7 @@ console.log("rueen");
 const mode = document.getElementById("gameMode").innerHTML;
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-var debug = true
+var debug = false
 var Bcanvas;
 var Bctx;
 if (mode=='local') {
@@ -11,15 +11,38 @@ if (mode=='local') {
 Bctx.font = "bold 18px Arial "; //for debuging
 }
 
+ const timeBoxW=document.getElementById("timerWhite")
+ const timeBoxB=document.getElementById("timerBlack") 
+ var timeW= parseInt(timeBoxW.innerHTML)*60
+ var timeB= parseInt(timeBoxB.innerHTML)*60
+ 
+  setInterval(()=>{
+    if(timeB <= 0|| timeW <= 0) return;
+    if(turn <=1) return;
+    
+  if (player =='b') {
+  //  timeTick(timeB,timeBoxB)
+    timeB-=1 
+    timeBoxB.innerHTML = ((timeB%60) >= 10)? `${Math.floor(timeB/60)}:${timeB%60}`:`${Math.floor(timeB/60)}:0${timeB%60}`
+  }
+  if (player =='w') {
+    timeW-=1
+    timeBoxW.innerHTML = ((timeW%60) >= 10)? `${Math.floor(timeW/60)}:${timeW%60}`:`${Math.floor(timeW/60)}:0${timeW%60}`
+    
+  }
+ },1000)
+
+
+
 const bishopSlope = [[-1, -3],[1, -3],[-1, 3],[1, 3],[2, 0],[-2, 0]];
 const rookSlope = [ [0, 2], [0, -2], [-1, 1], [1, 1], [-1, -1], [1, -1]];
 const knightSlope = [[-1,-5],[1,5],[-1,5],[1,-5],[3,1],[3,-1],[-3,1],[-3,-1],[2,4],[2,-4],[-2,4],[-2,-4]]
 
 //const colors = ["#212316", "#71764c", "#bdc19f"];
-// const colors = ['#ccc', '#fff', '#999']                     //slvr
-const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
-//const colors = ['rgb(0, 43, 44)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //ocianic
-//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
+//const colors = ['#ccc', '#fff', '#999']                     //slvr
+//const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
+//const colors = ['rgb(30, 93, 74)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //ocianic
+const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
 
 const hexSize = 42;
 const img = new Image();
@@ -29,6 +52,7 @@ var hexGrid = [];
 
 //var yourTurn = 
 var player = 'w'
+var turn = 0
 var mouseX = 0;
 var mouseY = 0;
 var mouseDown = false;
@@ -100,13 +124,14 @@ document.addEventListener("mousemove", (event) => {
   if (mode == 'local') {
   if (player == 'b') {
      rect = Bcanvas.getBoundingClientRect();
-     mouseX = Math.floor(event.clientX - rect.left) * 2;
      mouseY = (((Math.floor(event.clientY - rect.top) * 2)-400 )*-1 )+400;
+     mouseX = (((Math.floor(event.clientX - rect.left) * 2)-400 )*-1 )+400;
   }
   }
 });
 
 function newTurn(oldX, oldY, newX, newY) {
+  turn++
   (player == 'w')?player='b': player = 'w';
   if (mode == "local") {
   
@@ -253,7 +278,7 @@ isFirst = ((this.type >0)? Math.abs(5-this.idX) - this.idY == -12 :Math.abs(5-th
        if (checkGrid(this.idX-1,this.idY+slopeY/2,this.type) ) {
         if (hexGrid[this.idX-1][this.idY+(slopeY/2)].type != 0) {
           awns.push([this.idX-1,this.idY+(slopeY/2)])
-         }
+         } else {break};
        }
 if (isFirst) {
   if (checkGrid(this.idX,this.idY+(slopeY*2),hexGrid[this.idX][this.idY+(slopeY*2)].type) ) {
@@ -261,7 +286,6 @@ if (isFirst) {
 }}
        break
       default:
-        // awns.push([this.idX+2,this.idY+2])
         break;
     }
     return awns;
@@ -270,6 +294,7 @@ if (isFirst) {
   draw(context,flip, sizeChange) {
       if (flip){
       this.y = ((this.y-400)*-1)+400
+      this.x = ((this.x-400)*-1)+400
       }
       DrawHex(context,
         this.x,
@@ -301,10 +326,11 @@ if (isFirst) {
           this.y + this.size / 2 + 10,);
       }
       if (this.opt == true) {
-        DrawHex(context,this.x,this.y,this.size/2,'#777')
+        DrawHex(context,this.x,this.y,this.size/2,'#454')
       }
       if (flip){
         this.y = ((this.y-400)*-1)+400
+        this.x = ((this.x-400)*-1)+400
         }
     
   }
