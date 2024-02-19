@@ -10,6 +10,11 @@ dotenv.load_dotenv()
 
 games = []
 codes = []
+def findTime(gameCode): 
+    for i in range(len(games)):
+        if games[i]['code'] == gameCode:
+            return games[i]['time']
+
 
 def newCode():
     code = ''
@@ -29,7 +34,7 @@ socketio = SocketIO(app)
 @app.route('/')
 def root():
     session.clear()
-    response = make_response(redirect(url_for('login', message = 'to start, please make a acount. iether a name or real acount would work')))
+    response = make_response(redirect(url_for('login', message = 'to start, please give yourself a name')))
     response.set_cookie('id','',max_age=0)
     response.set_cookie('username','',max_age=0)
     return response
@@ -47,7 +52,8 @@ def onlineList():
             games.append({'time':request.form['time'],
                           'name':request.cookies.get('username','noName'),
                           'public':request.form.get('public','off'),
-                          'code':newCode() })
+                          'code':newCode(),
+                          'idOfCreator':request.cookies['id']})
             print(games)
             return redirect(url_for('giveSess',code =  games[len(games)-1]['code']))
         else:
@@ -55,25 +61,36 @@ def onlineList():
             
 @app.route('/playSess/<code>')
 def giveSess(code):
-    if "username" not in request.cookies:
+    if "username" not in request.cookies or "id" not in request.cookies:
         return redirect(url_for("login",message="need an acount to play"))
     if code not in codes:
         return redirect(url_for('login', message = 'tjat game dosn.t exist'))
-    
-    session['game'] = code
-    
+    gameIndex = 0
     for i in range(len(games)):
         if games[i]['code'] == code:
-            del games[i]
+            gameIndex = i
             break
+    else:
+        return redirect(url_for('login', message = 'tjat game dosn.t exist'))
+    
+    session['game'] = code
+    session['StartTime'] = findTime(code)
+    #############################################
+    if request.cookies['id']  != games[gameIndex]['idOfCreator']:
+        del games[gameIndex]
     return redirect(url_for('play', mode = 'online'))
 
 @app.route("/play/<mode>")
 def play(mode):
+    print('\n\n\n')
+    print(games)
+    print('\n\n\n')
     if "username" not in request.cookies and mode != "local":
         return redirect(url_for("login",message="need an acount to play"))
 
-    return render_template('index.html',mode = mode, id=request.cookies.get('id'), code = session['game'],time = 60)
+    return render_template('index.html',mode = mode, id=request.cookies.get('id'), 
+                           code = session.get('game','game no longer exists'),
+                           time =int(session.get('StartTime', '0')) // 60)
 
 @app.route("/select")
 def select():
