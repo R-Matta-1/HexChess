@@ -8,9 +8,11 @@
 {% endif %}
 <canvas id="canvas"  width="800px" height="800px"></canvas>
 <div id="time">
-    <div id="timerWhite">10:00</div>
-    <div id="timerBlack">10:00</div>
+    <div id="timerWhite">{{time/60}}</div>
+    <div id="timerBlack">{{time/60}}</div>
 </div>
+
+<p>{{code}}</p>
 
 {% if mode =='local'%}
 <canvas id="blackCanvas"   width="800px" height="800px"></canvas>

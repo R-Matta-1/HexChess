@@ -1,4 +1,4 @@
-console.log("rueen");
+console.log("run");
 const mode = document.getElementById("gameMode").innerHTML;
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -20,12 +20,12 @@ Bctx.font = "bold 18px Arial "; //for debuging
     if(timeB <= 0|| timeW <= 0) return;
     if(turn <=1) return;
     
-  if (player =='b') {
+  if (playerTurn =='b') {
   //  timeTick(timeB,timeBoxB)
     timeB-=1 
     timeBoxB.innerHTML = ((timeB%60) >= 10)? `${Math.floor(timeB/60)}:${timeB%60}`:`${Math.floor(timeB/60)}:0${timeB%60}`
   }
-  if (player =='w') {
+  if (playerTurn =='w') {
     timeW-=1
     timeBoxW.innerHTML = ((timeW%60) >= 10)? `${Math.floor(timeW/60)}:${timeW%60}`:`${Math.floor(timeW/60)}:0${timeW%60}`
     
@@ -40,9 +40,9 @@ const knightSlope = [[-1,-5],[1,5],[-1,5],[1,-5],[3,1],[3,-1],[-3,1],[-3,-1],[2,
 
 //const colors = ["#212316", "#71764c", "#bdc19f"];
 //const colors = ['#ccc', '#fff', '#999']                     //slvr
-//const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
+const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
 //const colors = ['rgb(30, 93, 74)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //ocianic
-const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
+//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
 
 const hexSize = 42;
 const img = new Image();
@@ -51,7 +51,8 @@ img.src =
 var hexGrid = [];
 
 //var yourTurn = 
-var player = 'w'
+var playerTurn = 'w'
+var playerId = 'w'
 var turn = 0
 var mouseX = 0;
 var mouseY = 0;
@@ -86,16 +87,17 @@ document.addEventListener("mouseup", () => {
   mouseDownInital = true;
 
   if (mouseUpInitial) {
-    let selected = hexGrid[mouseHex.idX][mouseHex.idY].type;
+    let selectedType = hexGrid[mouseHex.idX][mouseHex.idY].type;
     let selectedX = mouseHex.idX;
     let selectedY = mouseHex.idY;
     findMouseHex();
 
        let newHex = hexGrid[mouseHex.idX][mouseHex.idY];
     if (newHex.opt &&
-      (((Math.abs(selected) == selected)? 'w':'b') == player )) {
+      (((Math.abs(selectedType) == selectedType)? 'w':'b') == playerId ) &&
+      playerId == playerTurn) {
       // new turn move
-      hexGrid[mouseHex.idX][mouseHex.idY].type = selected;
+      hexGrid[mouseHex.idX][mouseHex.idY].type = selectedType;
       hexGrid[selectedX][selectedY].type = 0;
       newTurn(selectedX, selectedY, mouseHex.idX, mouseHex.idY);
     }
@@ -122,7 +124,7 @@ document.addEventListener("mousemove", (event) => {
   mouseY = Math.floor(event.clientY - rect.top) * 2;
 
   if (mode == 'local') {
-  if (player == 'b') {
+  if (playerTurn == 'b') {
      rect = Bcanvas.getBoundingClientRect();
      mouseY = (((Math.floor(event.clientY - rect.top) * 2)-400 )*-1 )+400;
      mouseX = (((Math.floor(event.clientX - rect.left) * 2)-400 )*-1 )+400;
@@ -132,8 +134,10 @@ document.addEventListener("mousemove", (event) => {
 
 function newTurn(oldX, oldY, newX, newY) {
   turn++
-  (player == 'w')?player='b': player = 'w';
+  (playerTurn == 'w')?playerTurn='b': playerTurn = 'w';
+
   if (mode == "local") {
+    (playerId == 'w')?playerId='b': playerId = 'w';
   
   for (let x = 0; x < hexGrid.length; x++) {
       let Xaxis = hexGrid[x];
@@ -467,7 +471,7 @@ function frame() {
 
   if (mode == 'local') {   
     Bctx.clearRect(0, 0, 800, 800);
-  (player == 'w')? DrawHex(ctx,400, 400, 400, "black"):DrawHex(Bctx,400, 400, 400, "black");
+  (playerTurn == 'w')? DrawHex(ctx,400, 400, 400, "black"):DrawHex(Bctx,400, 400, 400, "black");
   }
 
   drawGrid();

@@ -1,13 +1,19 @@
 # Hex Chess
-hexagonal chess, rules explained on wiki. 
+hexagonal chess, using Flask and Python
 
-using mongo and python driver
+python driver
 
 ## to do
 
 - [ ] client check client
-- [ ] timer
-- [ ] list games
+- [X] timer
+- [X] list games
 - [ ] make games sanatizer
-- [ ] controll sending changes #?????
-- [ ] pawns r stupd
+- [ ] controll sending turns 
+- [ ] end game state
+- [ ] better error handling
+- [ ] info page
+- [ ] deciding black and white
+- [ ] hey magggggiiii, could you stype it??
+style it
+ 

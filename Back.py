@@ -1,51 +1,83 @@
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 import os
+import pandas as pd
 import dotenv
+from random import randint
+from flask_socketio import join_room, leave_room, send, SocketIO
 from flask import Flask
-from flask import render_template, redirect, make_response,url_for,request
+from flask import render_template, redirect, make_response,url_for,request , session
 from uuid import uuid4
 dotenv.load_dotenv()
 
-uri = os.environ.get('uri')
-client = MongoClient( uri)
+games = []
+codes = []
 
-appDb = client.HexChess
-
-
+def newCode():
+    code = ''
+    for i in range(1,5):
+        code += str(randint(0,9))
+    if code in codes:
+        newCode()
+    else:
+        codes.append(code)
+        return code
 #flask Start///////////////////////////////////////////
 app = Flask(__name__)
+
 app.secret_key = os.environ.get('key')
+socketio = SocketIO(app)
 
 @app.route('/')
 def root():
+    session.clear()
     response = make_response(redirect(url_for('login', message = 'to start, please make a acount. iether a name or real acount would work')))
     response.set_cookie('id','',max_age=0)
     response.set_cookie('username','',max_age=0)
     return response
 
-@app.route('/onlineList/<mode>', methods = ['GET','POST'])
-def onlineList(mode):
-    if "username" not in request.cookies :
+@app.route('/onlineList', methods = ['GET','POST','FIND'])
+def onlineList():
+    session.clear()
+    if "username" not in request.cookies:
         return redirect(url_for("login",message="need an acount to play"))
+    if request.method == "GET":
+        return render_template('onlineList.html',games = games)
+    
     if request.method == 'POST':
-        #mongo mongo mongo
-        print(request.form['name'])
-        print(request.form['time'])
-        return render_template('onlineList.html',mode = 'find' )
-        
-    return render_template('onlineList.html',mode = mode)
+        if request.form['code'] == '' or None:
+            games.append({'time':request.form['time'],
+                          'name':request.cookies.get('username','noName'),
+                          'public':request.form.get('public','off'),
+                          'code':newCode() })
+            print(games)
+            return redirect(url_for('giveSess',code =  games[len(games)-1]['code']))
+        else:
+            return redirect(url_for('giveSess',code =  request.form['code']))
+            
+@app.route('/playSess/<code>')
+def giveSess(code):
+    if "username" not in request.cookies:
+        return redirect(url_for("login",message="need an acount to play"))
+    if code not in codes:
+        return redirect(url_for('login', message = 'tjat game dosn.t exist'))
+    
+    session['game'] = code
+    
+    for i in range(len(games)):
+        if games[i]['code'] == code:
+            del games[i]
+            break
+    return redirect(url_for('play', mode = 'online'))
 
 @app.route("/play/<mode>")
 def play(mode):
     if "username" not in request.cookies and mode != "local":
         return redirect(url_for("login",message="need an acount to play"))
-    
-    return render_template('index.html',mode = mode, id=request.cookies.get('id'))
+
+    return render_template('index.html',mode = mode, id=request.cookies.get('id'), code = session['game'],time = 60)
 
 @app.route("/select")
 def select():
-    return render_template('selectGmode.html')
+    return render_template('selectGmode.html') # make online locked if no name
 
 
 @app.route("/login/<message>",methods=['GET','POST'])
@@ -69,21 +101,15 @@ def login(message):
 def info():
     return render_template('info.html')
      
-@app.route('/friends')
-def friends():
-    if 'username' in request.cookies:
-        return 'friends menue'
-    else:
-        return redirect(url_for('login',message = 'need acount to friend'))
 
 @app.route('/info/howToPlay')
 def me():
-    return 'nunya buisness'
+    return 'Raphael Matta'
 
 
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app,debug=True)
 
