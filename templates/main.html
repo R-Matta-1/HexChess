@@ -8,44 +8,52 @@
   <link rel="icon" type="image/x-icon" href="{{url_for('static',filename='favicon.ico')}}">
 </head>
 <style>
-  #GenButton {
-    height:40px;
+
+#GenButton {
+    height: 40px;
   }
-   body {
+
+  body {
     font-family: Verdana, Geneva, sans-serif;
-    background-color: #121;
+    background-color: #1a1a1a; /* Dark background color */
+    color: #ddd; /* Light text color */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
   }
 
   a {
-    color: #fff;
+    color: #bbb; /* Light link color */
     text-decoration: none;
   }
-.canvasHolder{
-display: flex;
-}
+
+  .canvasHolder {
+    display: flex;
+  }
+
   canvas {
     width: 400px;
     height: 400px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
     display: block;
     image-rendering: high-quality;
   }
-  td{
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    background-color: rgb(165, 229, 165);
+
+  td {
+    padding: 10px 20px;
+    background-color: #323232; /* Dark gray background color */
   }
-  #gameCreator{
-    border:solid black;
-      height: 500px;
-        width: 500px;
-            top:50%;
-          left:50%;
-            margin:10px;
+
+  #gameCreator {
+    border: solid black;
+    height: 500px;
+    width: 500px;
+    top: 50%;
+    left: 50%;
+    margin: 10px;
   }
+
   .sideImg {
     height: 50px;
     margin: 10px;
@@ -55,64 +63,110 @@ display: flex;
 
   .sideLink {
     align-self: center;
-    font: black;
+    font-weight: bold; /* Bolden the font for better visibility */
   }
 
   #sidebar {
     text-align: center;
     justify-content: center;
-    background-color: #333;
+  background-color: #0e0e0e; /* Slightly lighter sidebar background color */
     position: fixed;
     height: 100%;
     width: 100px;
     left: 0%;
     top: 0px;
   }
-.error{
-  font-size: smaller;
-  color:red;
-}
-#gameMode{
-  display: none;
-}
+
+  .error {
+    font-size: smaller;
+    color: #ff5555; /* Red error text */
+  }
+
+  #gameMode {
+    display: none;
+  }
+
   #main {
     padding: 10px;
-    background-color: #797;
+  background-color: #282828;
     margin-top: 5px;
     margin-left: 110px;
     right: 0%;
     width: 500;
     min-height: 400px;
-        display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
   }
 
   .sidebarImg {
     width: 20px;
   }
-  table{
-    height:50%
-  }
-  #time{
-border: #000 solid;
-width: 100px;
-height: 50px;
-  }
-  #timerWhite{
-    background-color: rgb(207, 248, 207);
-    color: rgb(30, 42, 30);
 
-height: 25px;
-text-align: center;
+  table {
+    height: 50%;
   }
-  #timerBlack{
-height: 25px;
-background-color: rgb(30, 42, 30);
-color: rgb(207, 248, 207);
-text-align: center;
 
-
+  #time {
+    border: #333 solid; /* Darker border color */
+    width: 100px;
+    height: 50px;
   }
+
+  #timerWhite {
+    background-color: #444; /* Darker timer colors */
+    color: #ddd;
+    height: 25px;
+    text-align: center;
+  }
+
+  #timerBlack {
+    height: 25px;
+    background-color: #ddd;
+    color: #444;
+    text-align: center;
+  }
+
+  #formBox {
+    background-color: #333; /* Darker form box background color */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  form {
+    display: inline-block;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  input[type="checkbox"],
+  select,
+  input[type="text"],
+  input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #555; /* Darker border color */
+    border-radius: 5px;
+    background-color: #444; /* Darker input background color */
+    color: #ddd; /* Light text color */
+  }
+
+  input[type="submit"] {
+    background-color: #007f00; /* Dark green submit button color */
+    color: #fff; /* White text color */
+    cursor: pointer;
+  }
+
+  path{
+    fill:#77ac8b
+  }
+
 </style>
 
 <body>

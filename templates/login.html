@@ -1,14 +1,16 @@
 {% extends "main.html" %}
 
 {% block content %}
-<form method="post">
-    <label for="username">Enter your username</label>
-    <input type="text" id="username" name="username" required />
-    <button type="submit">Submit</button>
-</form>
+  
+<div style="text-align: center; padding: 20px;">
+    <form method="post" style="text-align: left;">
+        <label for="username" style="display: block; margin-bottom: 10px;">Enter your username</label>
+        <input type="text" id="username" name="username" required style="width: 200px; padding: 8px; box-sizing: border-box;" />
+        <button type="submit" style="margin-top: 10px; padding: 8px 15px;">Submit</button>
+    </form>
 
-{% if message %}
-<p class = 'error'>{{ message }}</p>
-{% endif %}
+    {% if message %}
+    <p style="color: #f88; margin-top: 10px;">{{ message }}</p>
+    {% endif %}
 
 {% endblock %}

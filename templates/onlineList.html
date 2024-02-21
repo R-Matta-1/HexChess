@@ -4,35 +4,41 @@
 
 
 
-<form  method="post">
-
-
+<div id = 'formBox'>
+  <form  method="post">
 <label for="public">add the game to the public list</label>
-        <input type="checkbox" name="public" id="public" >
-        <label for="time">Choose a time:</label>
-        <select id="time" name="time">
-          <option value="120">2:00</option>
-          <option value="300">5:00</option>
-          <option value="600">10:00</option>
-          <option value="900">15:00</option>
-        </select>
+      <input type="checkbox" name="public" id="public" > <br>
+      <label for="time">Choose a time:</label>
+      <select id="time" name="time">
+        <option value="120">2:00</option>
+        <option value="300">5:00</option>
+        <option value="600">10:00</option>
+        <option value="900">15:00</option>
+      </select>
+    <br>
+  <input type="submit" value="Submit">
+      <label for="codeInput">OR join a game by placing code here:</label>
+  <input type="text" name="code" id="codeInput">
+    <br>
+    <br>
+</form>
+  </div>
 
-    <label for="codeInput">join a game by placing code here:</label>
-    <input type="text" name="code" id="codeInput">
-    <input type="submit" value="Submit">
-
- </form>
-
- <ul>
+ <table>
+  <tr>
+      <th>name</th>
+      <th>time</th>
+  </tr>
 {% for game in games %}
-
     {% if game['public'] == 'on' %}
-
-    <li><a href="{{url_for('giveSess', code = game['code'])}}">{{game['name']}}, {{game['time']}}</a></li>
-
+    <tr>
+      <td>{{game['name']}}</td>
+      <td>{{game['time']}}</td>
+    <td><a href = "{{url_for('giveSess', code = game['code'])}}">Join</a></td>
+    </tr>
     {%endif%}
 {%endfor%}
-</ul>
+ </table>
 
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 !-->
