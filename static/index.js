@@ -1,10 +1,14 @@
 console.log("run");
 const mode = document.getElementById("gameMode").innerHTML;
 const canvas = document.getElementById("canvas");
+const Wpoints = document.getElementById('Wpoints') ;
+const Bpoints = document.getElementById('Bpoints') ;
 const ctx = canvas.getContext("2d");
 var debug = false
 var Bcanvas;
 var Bctx;
+
+
 if (mode=='local') {
    Bcanvas = document.getElementById("blackCanvas");
   Bctx= document.getElementById("blackCanvas").getContext("2d")
@@ -31,8 +35,6 @@ Bctx.font = "bold 18px Arial "; //for debuging
     
   }
  },1000)
-
-
 
 const bishopSlope = [[-1, -3],[1, -3],[-1, 3],[1, 3],[2, 0],[-2, 0]];
 const rookSlope = [ [0, 2], [0, -2], [-1, 1], [1, 1], [-1, -1], [1, -1]];
@@ -132,36 +134,57 @@ document.addEventListener("mousemove", (event) => {
   }
 });
 
+const turnData = {
+  Bcheck: false,
+  Wcheck: false,
+  Wpoints:43,
+  Bpoints:43,
+}
+
+const pieceToPoint ={
+  1:0,
+  2:9,
+  3:3,
+  4:3,
+  5:5,
+  6:1,
+}
 function newTurn(oldX, oldY, newX, newY) {
   turn++
   (playerTurn == 'w')?playerTurn='b': playerTurn = 'w';
-
   if (mode == "local") {
     (playerId == 'w')?playerId='b': playerId = 'w';
-  
-  for (let x = 0; x < hexGrid.length; x++) {
-      let Xaxis = hexGrid[x];
-      for (let y = 0; y < Xaxis.length; y++) {
-        let hex = Xaxis[y];
-        if (hex === undefined) {
-          continue;
-        }
-        hex.opt = false;
-        y++;
-      }
-    }
-    
   } else {
     // i need to learn AJAX or smth here
   }
+
+turnData.Wpoints = 0
+turnData.Bpoints = 0
+for (let x = 0; x < hexGrid.length; x++) {
+    for (let y = 0; y < hexGrid[x].length; y++) {
+      const hex = hexGrid[x][y];
+      if (hex == undefined) {
+        continue
+      }
+      if (hex.type > 0) {
+        turnData.Wpoints+= pieceToPoint[hex.type]
+      }
+      else if (hex.type < 0){
+        turnData.Bpoints+= pieceToPoint[Math.abs(hex.type)]
+      }
+      y+=1
+    }  
+}
+Wpoints.innerHTML = turnData.Wpoints;
+Bpoints.innerHTML = turnData.Bpoints;
 }
 
 function checkGrid(x, y, type) {
   return (
     x < hexGrid.length &&
-    x >= 0 && //check valid
+    x >= 0 &&                        //check valid
     y < hexGrid[x].length &&
-    y >= 0 && //check valid
+    y >= 0 &&                      //check valid
     hexGrid[x][y] != undefined && //check grid
     (hexGrid[x][y].type == 0 || !(hexGrid[x][y].type > 0) == type > 0)
   );
@@ -392,7 +415,8 @@ function initGrid(BaseX, BaseY, HexSize, width) {
 
 //init types and
 initGrid(400, 475, hexSize, 5); //king1, queen2, bishop3, rook5,horse4 pawn6
-const StartList = [ [1, 16, 6], [2, 15, 6], [3, 14, 6], [4, 13, 6], [5, 12, 6], [6, 13, 6], [7, 14, 6], [8, 15, 6], [9, 16, 6],
+const StartList = [ 
+  [1, 16, 6], [2, 15, 6], [3, 14, 6], [4, 13, 6], [5, 12, 6], [6, 13, 6], [7, 14, 6], [8, 15, 6], [9, 16, 6],
   [2, 17, 5],
   [8, 17, 5],
   [3, 18, 4],

@@ -8,11 +8,16 @@
 {% endif %}
 <canvas id="canvas"  width="800px" height="800px"></canvas>
 <div id="time">
-    <div id="timerWhite">{{time/60}}</div>
-    <div id="timerBlack">{{time/60}}</div>
+    <div id="timerWhite">{{time}}:00</div>
+    <div id="timerBlack">{{time}}:00</div> <br><br>
+    <div id="Wpoints">43</div>
+    <div id="Bpoints">43</div>
 </div>
 
+
+{% if code !=  '' %} 
 <p>{{code}}</p>
+{% endif %}
 
 {% if mode =='local'%}
 <canvas id="blackCanvas"   width="800px" height="800px"></canvas>

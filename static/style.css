@@ -1,4 +1,3 @@
-
 #GenButton {
   height: 40px;
 }
@@ -96,24 +95,33 @@ table {
   height: 50%;
 }
 
+#Wpoints{
+  background-color: #b3f4ca;
+  color: #21482a;
+}
+#Bpoints{
+  background-color: #21482a;
+  color: #b3f4ca;
+}
+
 #time {
   border: #333 solid; 
   width: 100px;
   height: 50px;
 }
+#time div{
+  text-align: center;
+  height: 25px;
+}
 
 #timerWhite {
-  background-color: #444; 
-  color: #ddd;
-  height: 25px;
-  text-align: center;
+  background-color: #ddd; 
+  color: #444;
 }
 
 #timerBlack {
-  height: 25px;
-  background-color: #ddd;
-  color: #444;
-  text-align: center;
+  background-color: #444;
+  color: #ddd;
 }
 
 #formBox {
