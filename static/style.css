@@ -4,8 +4,8 @@
 
 body {
   font-family: Verdana, Geneva, sans-serif;
-  background-color: #1a1a1a; 
-  color: #ddd; 
+  background-color: #1a1a1a;
+  color: #ddd;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -13,7 +13,7 @@ body {
 }
 
 a {
-  color: #bbb; 
+  color: #bbb;
   text-decoration: none;
 }
 
@@ -31,7 +31,7 @@ canvas {
 
 td {
   padding: 10px 20px;
-  background-color: #323232; 
+  background-color: #323232;
 }
 
 #gameCreator {
@@ -52,13 +52,13 @@ td {
 
 .sideLink {
   align-self: center;
-  font-weight: bold; 
+  font-weight: bold;
 }
 
 #sidebar {
   text-align: center;
   justify-content: center;
-background-color: #0e0e0e; 
+  background-color: #0e0e0e;
   position: fixed;
   height: 100%;
   width: 100px;
@@ -68,7 +68,7 @@ background-color: #0e0e0e;
 
 .error {
   font-size: smaller;
-  color: #ff5555; 
+  color: #ff5555;
 }
 
 #gameMode {
@@ -77,7 +77,7 @@ background-color: #0e0e0e;
 
 #main {
   padding: 10px;
-background-color: #282828;
+  background-color: #282828;
   margin-top: 5px;
   margin-left: 110px;
   right: 0%;
@@ -95,27 +95,29 @@ table {
   height: 50%;
 }
 
-#Wpoints{
+#Wpoints {
   background-color: #b3f4ca;
   color: #21482a;
 }
-#Bpoints{
+
+#Bpoints {
   background-color: #21482a;
   color: #b3f4ca;
 }
 
 #time {
-  border: #333 solid; 
+  border: #333 solid;
   width: 100px;
   height: 50px;
 }
-#time div{
+
+#time div {
   text-align: center;
   height: 25px;
 }
 
 #timerWhite {
-  background-color: #ddd; 
+  background-color: #ddd;
   color: #444;
 }
 
@@ -125,7 +127,7 @@ table {
 }
 
 #formBox {
-  background-color: #333; 
+  background-color: #333;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -149,18 +151,18 @@ input[type="submit"] {
   padding: 10px;
   margin-bottom: 15px;
   box-sizing: border-box;
-  border: 1px solid #555; 
+  border: 1px solid #555;
   border-radius: 5px;
-  background-color: #444; 
-  color: #ddd; 
+  background-color: #444;
+  color: #ddd;
 }
 
 input[type="submit"] {
-  background-color: #007f00; 
-  color: #fff; 
+  background-color: #007f00;
+  color: #fff;
   cursor: pointer;
 }
 
-path{
-  fill:#77ac8b
+path {
+  fill: #77ac8b
 }

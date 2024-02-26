@@ -495,7 +495,10 @@ function frame() {
 
   if (mode == 'local') {   
     Bctx.clearRect(0, 0, 800, 800);
-  (playerTurn == 'w')? DrawHex(ctx,400, 400, 400, "black"):DrawHex(Bctx,400, 400, 400, "black");
+  (playerTurn == 'w')? DrawHex(ctx,400, 400, 400, (turnData.Wcheck)?'red':'black'):(turnData.Wcheck)?'red':'black';
+  } else if (playerTurn == playerId){
+
+    DrawHex(ctx,400, 400, 400, (turnData.Wcheck)?'red':'black')
   }
 
   drawGrid();
