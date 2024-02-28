@@ -189,6 +189,9 @@ for (let x = 0; x < hexGrid.length; x++) {
 }
 Wpoints.innerHTML = turnData.Wpoints;
 Bpoints.innerHTML = turnData.Bpoints;
+
+
+//if no king 
 }
 
 function checkGrid(x, y, type) {
@@ -439,7 +442,7 @@ const StartList = [
   [4, 19, 2],
   [6, 19, 1],
 ];
-for (let i = 0; i <= 1; i++) {
+for (let i = 0; i <= 1; i++) { // place every part of the list, then flip it
   let flip = i;
   for (let k = 0; k < StartList.length; k++) {
     let rule = StartList[k];
@@ -505,14 +508,23 @@ let mouseHex = {
 function frame() {
   ctx.clearRect(0, 0, 800, 800);
 
-  if (mode == 'local') {   
-    Bctx.clearRect(0, 0, 800, 800);
-  (playerTurn == 'w')? DrawHex(ctx,400, 400, 400, (turnData.Wcheck)?'red':'black'):(turnData.Wcheck)?'red':'black';
-  } else if (playerTurn == playerId){
-//          if online and it it your turn
-    DrawHex(ctx,400, 400, 400, (turnData.Wcheck)?'red':'black')
-  }
+  if (mode == 'local') {////// if local
+  	Bctx.clearRect(0, 0, 800, 800);
+  	if (playerTurn == 'w') {
+  		DrawHex(ctx, 400, 400, 400, (turnData.Wcheck) ? 'red' : 'black')
+  	} else {
+  		DrawHex(Bctx, 400, 400, 400, (turnData.Bcheck) ? 'red' : 'black')
+    }
 
+  } else if (playerTurn == playerId) { //// if not lcoal
+  	if (playerId == 'w') {
+  		DrawHex(ctx, 400, 400, 400, (turnData.Wcheck) ? 'red' : 'black') //todo
+
+  	} else {
+  		DrawHex(Bctx, 400, 400, 400, (turnData.Bcheck) ? 'red' : 'black') //todo
+
+  	}
+  }
   drawGrid();
 
   requestAnimationFrame(frame);
