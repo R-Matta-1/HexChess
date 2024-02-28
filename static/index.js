@@ -160,6 +160,10 @@ function newTurn(oldX, oldY, newX, newY) {
 
 turnData.Wpoints = 0
 turnData.Bpoints = 0
+let Wking = []
+let Bking = []
+let WwaitList = []
+let BwaitList = []
 for (let x = 0; x < hexGrid.length; x++) {
     for (let y = 0; y < hexGrid[x].length; y++) {
       const hex = hexGrid[x][y];
@@ -167,10 +171,18 @@ for (let x = 0; x < hexGrid.length; x++) {
         continue
       }
       if (hex.type > 0) {
+        if (hex.type == 1) {
+          Wking = [hex.idX,hex.idY]
+        }
         turnData.Wpoints+= pieceToPoint[hex.type]
       }
       else if (hex.type < 0){
         turnData.Bpoints+= pieceToPoint[Math.abs(hex.type)]
+      }
+      ///now we do check analasis
+
+      else if (hex.type == -1){
+        Bking = [hex.idX,hex.idY]
       }
       y+=1
     }  
@@ -497,7 +509,7 @@ function frame() {
     Bctx.clearRect(0, 0, 800, 800);
   (playerTurn == 'w')? DrawHex(ctx,400, 400, 400, (turnData.Wcheck)?'red':'black'):(turnData.Wcheck)?'red':'black';
   } else if (playerTurn == playerId){
-
+//          if online and it it your turn
     DrawHex(ctx,400, 400, 400, (turnData.Wcheck)?'red':'black')
   }
 
