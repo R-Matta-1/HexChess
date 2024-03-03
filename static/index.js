@@ -4,21 +4,20 @@ const canvas = document.getElementById("canvas");
 const Wpoints = document.getElementById('Wpoints') ;
 const Bpoints = document.getElementById('Bpoints') ;
 const ctx = canvas.getContext("2d");
-var debug = false
+const debug = true
 var Bcanvas;
 var Bctx;
-
 
 if (mode=='local') {
    Bcanvas = document.getElementById("blackCanvas");
   Bctx= document.getElementById("blackCanvas").getContext("2d")
 Bctx.font = "bold 18px Arial "; //for debuging
 }
-
  const timeBoxW=document.getElementById("timerWhite")
  const timeBoxB=document.getElementById("timerBlack") 
- var timeW= parseInt(timeBoxW.innerHTML)*60
- var timeB= parseInt(timeBoxB.innerHTML)*60
+
+ let timeW= parseInt(timeBoxW.innerHTML)*60
+ let timeB= parseInt(timeBoxB.innerHTML)*60
  
   setInterval(()=>{
     if(timeB <= 0|| timeW <= 0) return;
@@ -172,26 +171,47 @@ for (let x = 0; x < hexGrid.length; x++) {
       }
       if (hex.type > 0) {
         if (hex.type == 1) {
-          Wking = [hex.idX,hex.idY]
+          Wking = [hex.idX,hex.idY] // get king pos W
         }
+        WwaitList.push(hex.findValid)
         turnData.Wpoints+= pieceToPoint[hex.type]
+
       }
       else if (hex.type < 0){
+        if (hex.type == -1) { 
+          Bking = [hex.idX,hex.idY] // get king pos B
+        }
+        BwaitList.push(hex.findValid())
         turnData.Bpoints+= pieceToPoint[Math.abs(hex.type)]
       }
-      ///now we do check analasis
-
-      else if (hex.type == -1){
-        Bking = [hex.idX,hex.idY]
-      }
       y+=1
-    }  
-}
+    }  }
+          ///now we do check analasis
+  if (Wking.length == 0) {
+    alert('white win')
+  }
+  if (Bking.length == 0) {
+    alert('black win') //////////// TODO: MAKE WIN
+  }
+  
+  turnData.Wcheck = isInCheck(Wking, BwaitList)
+  turnData.Bcheck = isInCheck(Bking, WwaitList)
+
 Wpoints.innerHTML = turnData.Wpoints;
 Bpoints.innerHTML = turnData.Bpoints;
 
-
 //if no king 
+}
+function isInCheck(KingPos, moves) {
+  
+  for (let i = 0; i < moves.length; i++) {
+    let possibleMove = moves[i];
+    if ((KingPos[0] == possibleMove[0]) && (KingPos[1] == possibleMove[1])) {
+      alert('chekc')
+      return true
+    }
+  }
+  return false
 }
 
 function checkGrid(x, y, type) {
@@ -228,10 +248,10 @@ class Hex {
         break;
       case -1: //king
       case 1:
-        for (let i = 0; i < 2; i++) {
-          let list = (i==0)?  rookSlope:bishopSlope;
+        for (let i = 0; i < 2; i++) {                 /* these show that you loop twice   */
+          let list = (i==0)?  rookSlope:bishopSlope;  /* once on rookSlope onece on Bishop*/
           for (let k = 0; k < list.length; k++) {
-            slopeX = list[k][0];
+            slopeX = list[k][0];                      
             slopeY = list[k][1];
             let y = this.idY + slopeY;
             let x = this.idX + slopeX;
@@ -385,7 +405,7 @@ function DrawHex(context,Xcenter, Ycenter, size, color) {
   context.strokeStyle = color;
   context.fillStyle = color;
   context.beginPath();
-  context.moveTo(Xcenter + size * Math.cos(0), Ycenter + size * Math.sin(0));
+  context.moveTo(Xcenter + size , Ycenter ); //context.moveTo(Xcenter + size * Math.cos(0), Ycenter + size * 0);
   for (let i = 1; i < 6; i++) {
     context.lineTo(
       Xcenter + size * Math.cos((i * 2 * Math.PI) / 6),
