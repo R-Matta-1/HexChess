@@ -29,16 +29,17 @@
       <th>name</th>
       <th>time</th>
   </tr>
-{% for game in games %}
-    {% if game['public'] == 'on' %}
+
+  {% for game in games %}
+      {% if game['public'] == 'on' %}
     <tr>
       <td>{{game['name']}}</td>
       <td>{{game['time']}}</td>
     <td><a href = "{{url_for('giveSess', code = game['code'])}}">Join</a></td>
     </tr>
-    {%endif%}
-{%endfor%}
- </table>
+      {%endif%}
+  {%endfor%}
+</table>
 
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 !-->

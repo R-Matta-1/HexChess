@@ -2,10 +2,14 @@
 {% extends"main.html" %}
 
 {% block content %}
-<div>
+<div class="gameModeHolder">
 <h1>select a gameMode</h1>
-<a href="{{url_for('play',mode='local')}}">local</a> <br>
-<a href="{{url_for('onlineList')}}">online</a><br>
+<div class="gameModeSelect">
+<a href="{{url_for('play',mode='local')}}">local</a> <br></div>
+
+<div class="gameModeSelect">
+
+<a href="{{url_for('onlineList')}}">online</a><br></div>
 
 
 </div>

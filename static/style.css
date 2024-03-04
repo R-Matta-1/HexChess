@@ -73,6 +73,10 @@ td {
 
 #gameMode {
   display: none;
+
+}
+#playerSide{
+  display: none;
 }
 
 #main {
@@ -164,5 +168,15 @@ input[type="submit"] {
 }
 
 path {
-  fill: #77ac8b
+  fill: #97c3a8
 }
+
+.gameModeHolder {
+  text-align: center;
+}
+
+
+.gameModeSelect {
+  margin-top: 10px;
+}
+

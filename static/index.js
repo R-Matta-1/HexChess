@@ -4,7 +4,7 @@ const canvas = document.getElementById("canvas");
 const Wpoints = document.getElementById('Wpoints') ;
 const Bpoints = document.getElementById('Bpoints') ;
 const ctx = canvas.getContext("2d");
-const debug = true
+var debug = false
 var Bcanvas;
 var Bctx;
 
@@ -41,9 +41,9 @@ const knightSlope = [[-1,-5],[1,5],[-1,5],[1,-5],[3,1],[3,-1],[-3,1],[-3,-1],[2,
 
 //const colors = ["#212316", "#71764c", "#bdc19f"];
 //const colors = ['#ccc', '#fff', '#999']                     //slvr
-const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
-//const colors = ['rgb(30, 93, 74)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //ocianic
-//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
+//const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
+//const colors = ['rgb(30, 93, 74)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //cool ocean
+const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
 
 const hexSize = 42;
 const img = new Image();
@@ -54,6 +54,10 @@ var hexGrid = [];
 //var yourTurn = 
 var playerTurn = 'w'
 var playerId = 'w'
+if(mode != 'local'){
+  playerId = document.getElementById('playerSide').innerHTML
+  console.log(playerId)
+}
 var turn = 0
 var mouseX = 0;
 var mouseY = 0;
@@ -121,15 +125,22 @@ document.addEventListener("mouseup", () => {
 
 document.addEventListener("mousemove", (event) => {
   let rect = canvas.getBoundingClientRect();
+
+
+  if (mode == 'local') {
   mouseX = Math.floor(event.clientX - rect.left) * 2;
   mouseY = Math.floor(event.clientY - rect.top) * 2;
 
-  if (mode == 'local') {
   if (playerTurn == 'b') {
      rect = Bcanvas.getBoundingClientRect();
      mouseY = (((Math.floor(event.clientY - rect.top) * 2)-400 )*-1 )+400;
      mouseX = (((Math.floor(event.clientX - rect.left) * 2)-400 )*-1 )+400;
   }
+  } else{ //we online
+    if (playerId == 'b') {
+      mouseY = (((Math.floor(event.clientY - rect.top) * 2)-400 )*-1 )+400;
+      mouseX = (((Math.floor(event.clientX - rect.left) * 2)-400 )*-1 )+400;
+    }
   }
 });
 
@@ -154,7 +165,7 @@ function newTurn(oldX, oldY, newX, newY) {
   if (mode == "local") {
     (playerId == 'w')?playerId='b': playerId = 'w';
   } else {
-    // i need to learn AJAX or smth here
+    // SOCKET SOCKET SOCKET
   }
 
 turnData.Wpoints = 0
@@ -173,15 +184,15 @@ for (let x = 0; x < hexGrid.length; x++) {
         if (hex.type == 1) {
           Wking = [hex.idX,hex.idY] // get king pos W
         }
-        WwaitList.push(hex.findValid)
-        turnData.Wpoints+= pieceToPoint[hex.type]
+       WwaitList =  WwaitList.concat(hex.findValid())   //add the new piece moves
+        turnData.Wpoints += pieceToPoint[hex.type]
 
-      }
+      }/////////////////////now if black
       else if (hex.type < 0){
         if (hex.type == -1) { 
           Bking = [hex.idX,hex.idY] // get king pos B
         }
-        BwaitList.push(hex.findValid())
+       BwaitList =  BwaitList.concat(hex.findValid()) // add new piece moves
         turnData.Bpoints+= pieceToPoint[Math.abs(hex.type)]
       }
       y+=1
@@ -203,11 +214,10 @@ Bpoints.innerHTML = turnData.Bpoints;
 //if no king 
 }
 function isInCheck(KingPos, moves) {
-  
+  console.log(moves)
   for (let i = 0; i < moves.length; i++) {
     let possibleMove = moves[i];
     if ((KingPos[0] == possibleMove[0]) && (KingPos[1] == possibleMove[1])) {
-      alert('chekc')
       return true
     }
   }
@@ -489,8 +499,13 @@ function drawGrid() {
       }
 
       hex.draw(ctx,false, 1);
+      
       if (mode == 'local') {
         hex.draw(Bctx,true, 1);
+      }
+
+      if (mode !='local' && playerId == 'b') {
+        hex.draw(ctx,true, 1);
       }
 
       y++;

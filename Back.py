@@ -13,12 +13,6 @@ games = []
 codes = []
 
 
-def findTime(gameCode):
-    for i in range(len(games)):
-        if games[i]["code"] == gameCode:
-            return games[i]["time"]
-
-
 def newCode():
     code = ""
     for i in range(1, 5):
@@ -28,8 +22,11 @@ def newCode():
     else:
         codes.append(code)
         return code
-
-
+def swap(pos):
+    if pos == 'w':
+        return'b'
+    if pos == 'b':
+        return'w'
 # flask Start///////////////////////////////////////////
 app = Flask(__name__)
 
@@ -64,7 +61,7 @@ def onlineList():
                     "name": request.cookies.get("username", "noName"),
                     "public": request.form.get("public", "off"),
                     "code": newCode(),
-                    "idOfCreator": request.cookies["id"],
+                    "idOfCreator": request.cookies["id"]
                 }
             )
             print(games)
@@ -86,13 +83,27 @@ def giveSess(code):
             break
     else:   # if no code send error
         return redirect(
-            url_for(
-                "login",
+            url_for("login",
                 message="that game dose not exist, or you entered into the game box while trying to create one",
             )
-        )
+        ) 
+    # else we have a good code, we now give our player session items
     session["game"] = code
-    session["StartTime"] = findTime(code)
+    session["StartTime"] = games[gameIndex]['time']
+    
+    # now find, black and white
+   
+    sideSelect = 'fail'
+    if int(code) % 2  == 0:
+        sideSelect = 'w'
+    else:
+        sideSelect= 'b'
+    if request.cookies.get("username", "noName") ==  games[gameIndex]['name']:
+        sideSelect = swap(sideSelect)
+
+    session["playerType"] = sideSelect
+    print(f'\n\n\n{ session["playerType"]}, {sideSelect}\n\n\n')
+    
     if request.cookies["id"] != games[gameIndex]["idOfCreator"]:
         del games[gameIndex]
     return redirect(url_for("play", mode="online"))
@@ -112,6 +123,7 @@ def play(mode):
             id=request.cookies.get("id"),
             code=session.get("game", "game no longer exists"),
             time=int(session.get("StartTime", "600")) // 60,
+            side = session['playerType']
         )
     else:
         print(codes)
@@ -136,9 +148,7 @@ def login(message):
         else:
             response.set_cookie("username", "")
             response.set_cookie("id", "")
-            return redirect(
-                url_for(
-                    "login", message="more then 5, less then 16, valid for .isalnum"
+            return redirect(url_for("login", message="more then 5, less then 16, valid for .isalnum"
                 )
             )
 
