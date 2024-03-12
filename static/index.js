@@ -40,10 +40,10 @@ const rookSlope = [ [0, 2], [0, -2], [-1, 1], [1, 1], [-1, -1], [1, -1]];
 const knightSlope = [[-1,-5],[1,5],[-1,5],[1,-5],[3,1],[3,-1],[-3,1],[-3,-1],[2,4],[2,-4],[-2,4],[-2,-4]]
 
 //const colors = ["#212316", "#71764c", "#bdc19f"];
-//const colors = ['#ccc', '#fff', '#999']                     //slvr
-//const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
+//const colors = ['#ccc', '#fff', '#999']                                        //slvr
+const colors = ['#e8ab6f', '#ffce9e', '#d18b47']                                //basic
 //const colors = ['rgb(30, 93, 74)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //cool ocean
-const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
+//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']            //pride
 
 const hexSize = 42;
 const img = new Image();
@@ -272,7 +272,6 @@ class Hex {
         break;
       case 2: //queen
       case -2:
-
       case 3: //bishop
       case -3:
         for (let i = 0; i < bishopSlope.length; i++) {
@@ -331,31 +330,41 @@ class Hex {
        break;
       case 6: //pawn
        slopeY =-2
-      case -6:
+      case -6://pawn
         if (slopeY == 0 ) slopeY = 2;
 if (this.idY+slopeY < 0 || this.idY+slopeY > hexGrid[this.idX].length) {
   this.type = (this.type < 0 )? -2: 2;
   this.findValid()
   break
 }
-isFirst = ((this.type >0)? Math.abs(5-this.idX) - this.idY == -12 :Math.abs(5-this.idX) + this.idY == 8)
+
+// find out if the pawn is in the place to be able to double jump
+if(this.type> 0 ){
+  isFirst = Math.abs(5-this.idX) - this.idY == -12 
+} else{
+  isFirst = Math.abs(5-this.idX) + this.idY == 8
+}
 
        if (checkGrid(this.idX,this.idY+slopeY,hexGrid[this.idX][this.idY+slopeY].type) ) {
         awns.push([this.idX,this.idY+slopeY])
+        if (isFirst) {  //first move 
+          if (checkGrid(this.idX,this.idY+(slopeY*2),hexGrid[this.idX][this.idY+(slopeY*2)].type) ) {
+            awns.push([this.idX,this.idY+(slopeY*2)])
+        }}
        }
-       if (checkGrid(this.idX+1,this.idY+(slopeY/2),this.type) ) {
-       if (hexGrid[this.idX+1][this.idY+(slopeY/2)].type != 0) {
+       //check side atack left
+       if (checkGrid(this.idX+1,this.idY+(slopeY/2),this.type) && 
+       hexGrid[this.idX+1][this.idY+(slopeY/2)].type != 0) {
         awns.push([this.idX+1,this.idY+(slopeY/2)])
-       }}
+       }
+       //check attack right
        if (checkGrid(this.idX-1,this.idY+slopeY/2,this.type) ) {
         if (hexGrid[this.idX-1][this.idY+(slopeY/2)].type != 0) {
           awns.push([this.idX-1,this.idY+(slopeY/2)])
-         } else {break};
+         };
        }
-if (isFirst) {
-  if (checkGrid(this.idX,this.idY+(slopeY*2),hexGrid[this.idX][this.idY+(slopeY*2)].type) ) {
-    awns.push([this.idX,this.idY+(slopeY*2)])
-}}
+
+
        break
       default:
         break;
