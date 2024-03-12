@@ -13,7 +13,7 @@ if (mode=='local') {
   Bctx= document.getElementById("blackCanvas").getContext("2d")
 Bctx.font = "bold 18px Arial "; //for debuging
 }
- const timeBoxW=document.getElementById("timerWhite")
+ const timeBoxW=document.getElementById("timerWhite")// todo: fix timer
  const timeBoxB=document.getElementById("timerBlack") 
 
  let timeW= parseInt(timeBoxW.innerHTML)*60
@@ -40,10 +40,10 @@ const rookSlope = [ [0, 2], [0, -2], [-1, 1], [1, 1], [-1, -1], [1, -1]];
 const knightSlope = [[-1,-5],[1,5],[-1,5],[1,-5],[3,1],[3,-1],[-3,1],[-3,-1],[2,4],[2,-4],[-2,4],[-2,-4]]
 
 //const colors = ["#212316", "#71764c", "#bdc19f"];
-//const colors = ['#ccc', '#fff', '#999']                                        //slvr
-const colors = ['#e8ab6f', '#ffce9e', '#d18b47']                                //basic
+const colors = ['#ccc', '#fff', '#999']                     //slvr
+//const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
 //const colors = ['rgb(30, 93, 74)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //cool ocean
-//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']            //pride
+//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
 
 const hexSize = 42;
 const img = new Image();
@@ -199,10 +199,10 @@ for (let x = 0; x < hexGrid.length; x++) {
     }  }
           ///now we do check analasis
   if (Wking.length == 0) {
-    alert('white win')
+    alert('black win')
   }
   if (Bking.length == 0) {
-    alert('black win') //////////// TODO: MAKE WIN
+    alert('white win') //////////// TODO: MAKE WIN
   }
   
   turnData.Wcheck = isInCheck(Wking, BwaitList)
@@ -223,7 +223,6 @@ function isInCheck(KingPos, moves) {
   }
   return false
 }
-
 function checkGrid(x, y, type) {
   return (
     x < hexGrid.length &&
