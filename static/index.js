@@ -7,8 +7,9 @@ const ctx = canvas.getContext("2d");
 var debug = false
 var Bcanvas;
 var Bctx;
+const isLocal = (mode == 'local')
 
-if (mode=='local') {
+if (isLocal) {
    Bcanvas = document.getElementById("blackCanvas");
   Bctx= document.getElementById("blackCanvas").getContext("2d")
 Bctx.font = "bold 18px Arial "; //for debuging
@@ -54,7 +55,7 @@ var hexGrid = [];
 //var yourTurn = 
 var playerTurn = 'w'
 var playerId = 'w'
-if(mode != 'local'){
+if(!isLocal){
   playerId = document.getElementById('playerSide').innerHTML
   console.log(playerId)
 }
@@ -127,7 +128,7 @@ document.addEventListener("mousemove", (event) => {
   let rect = canvas.getBoundingClientRect();
 
 
-  if (mode == 'local') {
+  if (isLocal) {
   mouseX = Math.floor(event.clientX - rect.left) * 2;
   mouseY = Math.floor(event.clientY - rect.top) * 2;
 
@@ -162,7 +163,7 @@ const pieceToPoint ={
 function newTurn(oldX, oldY, newX, newY) {
   turn++
   (playerTurn == 'w')?playerTurn='b': playerTurn = 'w';
-  if (mode == "local") {
+  if (isLocal) {
     (playerId == 'w')?playerId='b': playerId = 'w';
   } else {
     // SOCKET SOCKET SOCKET
@@ -508,11 +509,11 @@ function drawGrid() {
 
       hex.draw(ctx,false, 1);
       
-      if (mode == 'local') {
+      if (isLocal) {
         hex.draw(Bctx,true, 1);
       }
 
-      if (mode !='local' && playerId == 'b') {
+      if (!isLocal && playerId == 'b') {
         hex.draw(ctx,true, 1);
       }
 
@@ -551,7 +552,7 @@ let mouseHex = {
 function frame() {
   ctx.clearRect(0, 0, 800, 800);
 
-  if (mode == 'local') {////// if local
+  if (isLocal) {////// if local
   	Bctx.clearRect(0, 0, 800, 800);
   	if (playerTurn == 'w') {
   		DrawHex(ctx, 400, 400, 400, (turnData.Wcheck) ? 'red' : 'black')
