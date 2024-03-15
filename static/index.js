@@ -9,30 +9,35 @@ var Bcanvas;
 var Bctx;
 const isLocal = (mode == 'local')
 
+
 if (isLocal) {
    Bcanvas = document.getElementById("blackCanvas");
   Bctx= document.getElementById("blackCanvas").getContext("2d")
 Bctx.font = "bold 18px Arial "; //for debuging
 }
- const timeBoxW=document.getElementById("timerWhite")// todo: fix timer
+ const timeBoxW=document.getElementById("timerWhite")
  const timeBoxB=document.getElementById("timerBlack") 
 
  let timeW= parseInt(timeBoxW.innerHTML)*60
  let timeB= parseInt(timeBoxB.innerHTML)*60
- 
+
   setInterval(()=>{
     if(timeB <= 0|| timeW <= 0) return;
     if(turn <=1) return;
     
   if (playerTurn =='b') {
-  //  timeTick(timeB,timeBoxB)
     timeB-=1 
     timeBoxB.innerHTML = ((timeB%60) >= 10)? `${Math.floor(timeB/60)}:${timeB%60}`:`${Math.floor(timeB/60)}:0${timeB%60}`
+    if (timeB <=0) {
+      Win('black ran out of time! white wins.')
+    }
   }
   if (playerTurn =='w') {
     timeW-=1
     timeBoxW.innerHTML = ((timeW%60) >= 10)? `${Math.floor(timeW/60)}:${timeW%60}`:`${Math.floor(timeW/60)}:0${timeW%60}`
-    
+    if (timeW <=0) {
+    Win('white ran out of time! black wins.')
+  }
   }
  },1000)
 
@@ -41,10 +46,10 @@ const rookSlope = [ [0, 2], [0, -2], [-1, 1], [1, 1], [-1, -1], [1, -1]];
 const knightSlope = [[-1,-5],[1,5],[-1,5],[1,-5],[3,1],[3,-1],[-3,1],[-3,-1],[2,4],[2,-4],[-2,4],[-2,-4]]
 
 //const colors = ["#212316", "#71764c", "#bdc19f"];
-const colors = ['#ccc', '#fff', '#999']                     //slvr
-//const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
+//const colors = ['#ccc', '#fff', '#999']                     //slvr
+const colors = ['#e8ab6f', '#ffce9e', '#d18b47']            //basic
 //const colors = ['rgb(30, 93, 74)', 'rgb(0, 175, 146)', 'rgb(170, 210, 212)'] //cool ocean
-//const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
+///const colors = ['rgb(255, 78, 189)','rgb(127, 171, 255)','#eee']  //pride
 
 const hexSize = 42;
 const img = new Image();
@@ -200,10 +205,10 @@ for (let x = 0; x < hexGrid.length; x++) {
     }  }
           ///now we do check analasis
   if (Wking.length == 0) {
-    alert('black win')
+    Win('black wins')
   }
   if (Bking.length == 0) {
-    alert('white win') //////////// TODO: MAKE WIN
+    Win('white wins') 
   }
   
   turnData.Wcheck = isInCheck(Wking, BwaitList)
@@ -549,23 +554,35 @@ let mouseHex = {
   type: 0,
 };
 
+function Win(message) {
+  //todo,makebox, open with message,
+  alert(message) 
+  return
+}
+
+let Wcolor;
+let Bcolor;
 function frame() {
   ctx.clearRect(0, 0, 800, 800);
 
+
+  Wcolor = (turnData.Wcheck) ? 'red' : 'black'
+  Bcolor = (turnData.Bcheck) ? 'red' : 'black'
+  
   if (isLocal) {////// if local
   	Bctx.clearRect(0, 0, 800, 800);
   	if (playerTurn == 'w') {
-  		DrawHex(ctx, 400, 400, 400, (turnData.Wcheck) ? 'red' : 'black')
+  		DrawHex(ctx, 400, 400, 400,Wcolor )
   	} else {
-  		DrawHex(Bctx, 400, 400, 400, (turnData.Bcheck) ? 'red' : 'black')
+  		DrawHex(Bctx, 400, 400, 400,Bcolor )
     }
 
   } else if (playerTurn == playerId) { //// if not lcoal
   	if (playerId == 'w') {
-  		DrawHex(ctx, 400, 400, 400, (turnData.Wcheck) ? 'red' : 'black') //todo
+  		DrawHex(ctx, 400, 400, 400, Wcolor) //todo
 
   	} else {
-  		DrawHex(Bctx, 400, 400, 400, (turnData.Bcheck) ? 'red' : 'black') //todo
+  		DrawHex(ctx, 400, 400, 400, Bcolor) //todo
 
   	}
   }
