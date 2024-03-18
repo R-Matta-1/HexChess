@@ -11,6 +11,7 @@ dotenv.load_dotenv()
 
 games = []
 codes = []
+names = []
 
 
 def newCode():
@@ -88,6 +89,7 @@ def giveSess(code):
             )
         ) 
     # else we have a good code, we now give our player session items
+    session['index'] = gameIndex
     session["game"] = code
     session["StartTime"] = games[gameIndex]['time']
     
@@ -98,13 +100,15 @@ def giveSess(code):
         sideSelect = 'w'
     else:
         sideSelect= 'b'
+        
     if request.cookies.get("username", "noName") ==  games[gameIndex]['name']:
         sideSelect = swap(sideSelect)
 
     session["playerType"] = sideSelect
-    print(f'\n\n\n{ session["playerType"]}, {sideSelect}\n\n\n')
+    print(f'\n\n{ session["playerType"]}, {sideSelect}\n\n')
     
-    if request.cookies["id"] != games[gameIndex]["idOfCreator"]:
+    session['didCreate'] = request.cookies["id"] == games[gameIndex]["idOfCreator"]
+    if  not session['didCreate']:
         del games[gameIndex]
     return redirect(url_for("play", mode="online"))
 
@@ -113,9 +117,12 @@ def giveSess(code):
 def play(mode):
     if mode == "local":
         return render_template("index.html", mode=mode, code="", time="10")
-
+    
+    if session.get('game',None) == None:
+        return redirect(url_for('login', message = "dont reset the page"))
     if "username" not in request.cookies and mode != "local":
         return redirect(url_for("login", message="need an acount to play"))
+    
     if session["game"] in codes:
         return render_template(
             "index.html",
@@ -123,12 +130,13 @@ def play(mode):
             id=request.cookies.get("id"),
             code=session.get("game", "game no longer exists"),
             time=int(session.get("StartTime", "600")) // 60,
-            side = session['playerType']
+            side = session['playerType'],
+            creator = session['didCreate']
         )
     else:
         print(codes)
         print(games)
-        return url_for("onlineList")
+        return redirect(url_for("onlineList"))
 
 
 @app.route("/select")
@@ -141,9 +149,10 @@ def login(message):
     if request.method == "POST":
         response = make_response(redirect(url_for("select")))
         username = request.form["username"]
-        if len(username) <= 16 and len(username) > 5 and username.isalnum():
+        if len(username) <= 16 and len(username) > 5 and username.isalnum() and username not in names:
             response.set_cookie("username", username, httponly=True)
             response.set_cookie("id", uuid4().hex, httponly=True)
+            names.append(username)
             return response
         else:
             response.set_cookie("username", "")
@@ -165,19 +174,45 @@ def me():
     return redirect('https://wikipedia.org/wiki/Hexagonal_chess#')
 
 @socketio.on('connect')
-def connect(auth):
-    print(auth)
+def connect():
+    print('\nnconection\n')
     game = session.get('game')
-    name = request.cookies('name')
-    if not game or not name:
+
+    if not game:
         return
-    if int(game) not in codes:
+    if game not in codes:
         print('game dose not exist')
         leave_room(game)
         return
+    
     join_room(game)
-    send({'message':'join', "name": name}, to = game)
-
+    send({'type':'join'}, to = game)
+   
+    
+@socketio.on('message')
+def turn(data):
+    print('\n\nmove\n\n')
+    game = session.get('game')
+    if game not in codes:
+        return
+    send({'type':'turn', 'data':data}, to = game)
+    
+@socketio.on('disconnect')
+def disconnect():
+    print('disconnect')
+    game = session.get('game')
+    leave_room(game)
+    send({'message':'leave'},to= game)
+    
+    for i in range(len(games)):
+        if game in games[i]['code']:
+            del games[i]
+            break
+        
+    for i in range(len(codes)):
+        if game in codes[i]:
+            del codes[i]
+            break
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)
