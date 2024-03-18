@@ -164,6 +164,20 @@ def info():
 def me():
     return redirect('https://wikipedia.org/wiki/Hexagonal_chess#')
 
+@socketio.on('connect')
+def connect(auth):
+    print(auth)
+    game = session.get('game')
+    name = request.cookies('name')
+    if not game or not name:
+        return
+    if int(game) not in codes:
+        print('game dose not exist')
+        leave_room(game)
+        return
+    join_room(game)
+    send({'message':'join', "name": name}, to = game)
+
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)

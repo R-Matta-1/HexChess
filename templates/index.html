@@ -3,6 +3,7 @@
 {% block content %}
 <p id="gameMode">{{mode}}</p>
 <p id="playerSide">{{side}}</p>
+<p id="gameMaker">{{creator}}</p>
 {% if mode =='local'%}
 <div class =  'canvasHolder'>
 
@@ -14,7 +15,11 @@
     <div id="Wpoints">43</div>
     <div id="Bpoints">43</div>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
+         integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" 
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer">
+        </script>
 
 {% if code !=  '' %} 
 <p>{{code}}</p>

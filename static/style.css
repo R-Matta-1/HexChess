@@ -34,7 +34,7 @@ td {
   background-color: #323232;
 }
 
-#gameCreator {
+#gameCreator  {
   border: solid black;
   height: 500px;
   width: 500px;
@@ -78,7 +78,9 @@ td {
 #playerSide{
   display: none;
 }
-
+#gameMaker{
+  display: none;
+}
 #main {
   padding: 10px;
   background-color: #282828;

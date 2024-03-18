@@ -8,13 +8,34 @@ var debug = false
 var Bcanvas;
 var Bctx;
 const isLocal = (mode == 'local')
-
+const roomCode=0;
 
 if (isLocal) {
    Bcanvas = document.getElementById("blackCanvas");
   Bctx= document.getElementById("blackCanvas").getContext("2d")
 Bctx.font = "bold 18px Arial "; //for debuging
+} else{
+ var socket = new io()
+ var peopleHere = 0
+ const roomCode = document.getElementById('playerSide').innerHTML
+ socket.on('disconnect', (s)=> {
+  console.log('dis')
+  socket.join(roomCode)
+ })
+ socket.on('message',(data)=>{
+if (data.type == 'join') {
+      peopleHere++
+    }
+if (data.type == 'turn') {
+  newTurn(data.data['x1'],data.data['y1'],data.data['x2'],
+          data.data['y2'],data.data['typ'])
 }
+if (data.type =='leave') {
+  alert('sorry man,somthing happened but between you and me, your the winner ヾ(≧▽≦*)o')
+}
+})
+}
+
  const timeBoxW=document.getElementById("timerWhite")
  const timeBoxB=document.getElementById("timerBlack") 
 
@@ -108,9 +129,19 @@ document.addEventListener("mouseup", () => {
       (((Math.abs(selectedType) == selectedType)? 'w':'b') == playerId ) &&
       playerId == playerTurn) {
       // new turn move
-      hexGrid[mouseHex.idX][mouseHex.idY].type = selectedType;
-      hexGrid[selectedX][selectedY].type = 0;
-      newTurn(selectedX, selectedY, mouseHex.idX, mouseHex.idY);
+
+      if (isLocal) {
+      newTurn(selectedX, selectedY, mouseHex.idX, mouseHex.idY,selectedType);
+
+      } else{ if(peopleHere >= ((document.getElementById('gameMaker').innerHTML == 'True')? 2:1)){
+        socket.emit(
+          'message',
+          {x1: selectedX,
+           y1: selectedY,
+           x2:mouseHex.idX,
+           y2:mouseHex.idY,
+           typ:selectedType})
+      }}
     }
 
     //after we do this, run through and make sure no one is glowing when mouse is up
@@ -133,21 +164,23 @@ document.addEventListener("mousemove", (event) => {
   let rect = canvas.getBoundingClientRect();
 
 
-  if (isLocal) {
   mouseX = Math.floor(event.clientX - rect.left) * 2;
   mouseY = Math.floor(event.clientY - rect.top) * 2;
-
+  
+  if (isLocal) {
   if (playerTurn == 'b') {
      rect = Bcanvas.getBoundingClientRect();
      mouseY = (((Math.floor(event.clientY - rect.top) * 2)-400 )*-1 )+400;
      mouseX = (((Math.floor(event.clientX - rect.left) * 2)-400 )*-1 )+400;
   }
   } else{ //we online
+
     if (playerId == 'b') {
       mouseY = (((Math.floor(event.clientY - rect.top) * 2)-400 )*-1 )+400;
       mouseX = (((Math.floor(event.clientX - rect.left) * 2)-400 )*-1 )+400;
     }
   }
+  console.log(`x:${mouseX},y:${mouseY}`)
 });
 
 const turnData = {
@@ -165,14 +198,15 @@ const pieceToPoint ={
   5:5,
   6:1,
 }
-function newTurn(oldX, oldY, newX, newY) {
+function newTurn(oldX, oldY, newX, newY,selectedType) {
   turn++
+  hexGrid[newX][newY].type = selectedType;
+  hexGrid[oldX][oldY].type = 0;
   (playerTurn == 'w')?playerTurn='b': playerTurn = 'w';
+
   if (isLocal) {
     (playerId == 'w')?playerId='b': playerId = 'w';
-  } else {
-    // SOCKET SOCKET SOCKET
-  }
+  } 
 
 turnData.Wpoints = 0
 turnData.Bpoints = 0
@@ -388,6 +422,7 @@ if(this.type> 0 ){
         this.size + sizeChange,
         colors[this.colorIndex % colors.length],
       );
+      
       if (this.type != 0) {
         let Dwidth = this.size * 1.5;
   
@@ -511,17 +546,20 @@ function drawGrid() {
       if (hex === undefined) {
         continue;
       }
-
-      hex.draw(ctx,false, 1);
-      
+///////////////////////
+  
       if (isLocal) {
         hex.draw(Bctx,true, 1);
+        hex.draw(ctx,false, 1);
       }
 
+      if (!isLocal && playerId == 'w') {
+        hex.draw(ctx,false, 1);
+      }
       if (!isLocal && playerId == 'b') {
         hex.draw(ctx,true, 1);
       }
-
+/////////////////////////////
       y++;
     }
   }
