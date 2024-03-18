@@ -3,16 +3,13 @@ hexagonal chess, using Flask and Python
 
 python driver
 
-## to do
+still needs cleanup and could be optimized, but it is now playable on a local host 🎊🎉🍾
 
-- [ ] client check client
+- [X] client check client
 - [X] timer
 - [X] check check
 - [X] list games
-- [ ] make games sanatizer
-- [ ] controll sending turns 
-- [ ] end game state 
-- [ ] info page
-- [ ] deciding black and white
-style it
+- [X] controll sending turns 
+- [-] end game state 
+- style: more style never hurt
  
