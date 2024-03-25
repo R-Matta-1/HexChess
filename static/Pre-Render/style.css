@@ -1,0 +1,171 @@
+#GenButton {
+    height: 40px;
+  }
+  
+  body {
+    font-family: Verdana, Geneva, sans-serif;
+    background-color: #1a1a1a;
+    color: #ddd;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  a {
+    color: #bbb;
+    text-decoration: none;
+  }
+  
+  .canvasHolder {
+    display: flex;
+  }
+  
+  canvas {
+    width: 400px;
+    height: 400px;
+    margin: auto;
+    display: block;
+    image-rendering: high-quality;
+  }
+  
+  td {
+    padding: 10px 20px;
+    background-color: #323232;
+  }
+  
+  #gameCreator {
+    border: solid black;
+    height: 500px;
+    width: 500px;
+    top: 50%;
+    left: 50%;
+    margin: 10px;
+  }
+  
+  .sideImg {
+    height: 50px;
+    margin: 10px;
+    max-height: 50px;
+    overflow: hidden;
+  }
+  
+  .sideLink {
+    align-self: center;
+    font-weight: bold;
+  }
+  
+  #sidebar {
+    text-align: center;
+    justify-content: center;
+    background-color: #0e0e0e;
+    position: fixed;
+    height: 100%;
+    width: 100px;
+    left: 0%;
+    top: 0px;
+  }
+  
+  .error {
+    font-size: smaller;
+    color: #ff5555;
+  }
+  
+  #gameMode {
+    display: none;
+  }
+  
+  #main {
+    padding: 10px;
+    background-color: #282828;
+    margin-top: 5px;
+    margin-left: 110px;
+    right: 10%;
+    width: 500;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .sidebarImg {
+    width: 20px;
+  }
+  
+  table {
+    height: 50%;
+  }
+  
+  #Wpoints {
+    background-color: #b3f4ca;
+    color: #21482a;
+  }
+  
+  #Bpoints {
+    background-color: #21482a;
+    color: #b3f4ca;
+  }
+  
+  #time {
+    border: #333 solid;
+    width: 100px;
+    height: 50px;
+  }
+  
+  #time div {
+    text-align: center;
+    height: 25px;
+  }
+  
+  #timerWhite {
+    background-color: #ddd;
+    color: #444;
+  }
+  
+  #timerBlack {
+    background-color: #444;
+    color: #ddd;
+  }
+  
+  #formBox {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  form {
+    display: inline-block;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  input[type="checkbox"],
+  select,
+  input[type="text"],
+  input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #444;
+    color: #ddd;
+  }
+  
+  input[type="submit"] {
+    background-color: #007f00;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  path {
+    fill: #77ac8b
+  }
+#Winbox{
+  
+}
