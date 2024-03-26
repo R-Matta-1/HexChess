@@ -93,7 +93,18 @@ var mouseDownInital = true;
 var mouseUpInitial = false;
 ctx.font = "bold 18px Arial "; //for debuging
 
-document.addEventListener("mousedown", () => {
+document.addEventListener("mousedown", () => {down()});
+document.addEventListener("touchstart", () => {down()});
+
+
+document.addEventListener("mouseup", () => {up()});
+document.addEventListener("touchend", () => {up()});
+
+
+document.addEventListener("mousemove", (event) => { move(event)});
+document.addEventListener("touchmove", (event) => { move(event)});
+
+function down() {
   if (mouseX < 0 || mouseX > 800 ||mouseY < 0 || mouseY > 800) {
     return
   }
@@ -112,9 +123,9 @@ document.addEventListener("mousedown", () => {
     }
   }
   mouseDownInital = false;
-});
+}
 
-document.addEventListener("mouseup", () => {
+function up() {
   mouseDown = false;
   mouseDownInital = true;
 
@@ -158,9 +169,8 @@ document.addEventListener("mouseup", () => {
     }
   }
   mouseUpInitial = false;
-});
-
-document.addEventListener("mousemove", (event) => {
+}
+function move(event) {
   let rect = canvas.getBoundingClientRect();
 
 
@@ -181,7 +191,7 @@ document.addEventListener("mousemove", (event) => {
     }
   }
   console.log(`x:${mouseX},y:${mouseY}`)
-});
+}
 
 const turnData = {
   Bcheck: false,
