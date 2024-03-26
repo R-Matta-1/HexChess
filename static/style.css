@@ -19,13 +19,18 @@ a {
 
 .canvasHolder {
   display: flex;
+  flex-direction: row;
+}
+@media (max-width: 933px) {
+  .canvasHolder{
+    flex-direction: column;
+  }
 }
 
 canvas {
   width: 400px;
   height: 400px;
   margin: auto;
-  display: block;
   image-rendering: high-quality;
 }
 
@@ -34,7 +39,7 @@ td {
   background-color: #323232;
 }
 
-#gameCreator  {
+#gameCreator {
   border: solid black;
   height: 500px;
   width: 500px;
@@ -73,20 +78,14 @@ td {
 
 #gameMode {
   display: none;
+}
 
-}
-#playerSide{
-  display: none;
-}
-#gameMaker{
-  display: none;
-}
 #main {
   padding: 10px;
   background-color: #282828;
   margin-top: 5px;
   margin-left: 110px;
-  right: 0%;
+  right: 10%;
   width: 500;
   min-height: 400px;
   display: flex;
@@ -170,15 +169,8 @@ input[type="submit"] {
 }
 
 path {
-  fill: #97c3a8
+  fill: #77ac8b
 }
+/*#Winbox{
 
-.gameModeHolder {
-  text-align: center;
-}
-
-
-.gameModeSelect {
-  margin-top: 10px;
-}
-
+}*/
