@@ -94,7 +94,8 @@ var mouseUpInitial = false;
 ctx.font = "bold 18px Arial "; //for debuging
 
 document.addEventListener("mousedown", () => {down()});
-document.addEventListener("touchstart", () => {down()});
+document.addEventListener("touchstart", (event) => {
+                                    move(event);down()});
 
 
 document.addEventListener("mouseup", () => {up()});

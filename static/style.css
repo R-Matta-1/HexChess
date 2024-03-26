@@ -25,6 +25,25 @@ a {
   .canvasHolder{
     flex-direction: column;
   }
+  canvas{
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Standard */
+  }
+  #sidebar {
+    width: 50px;
+  }
+  .sidebarImg {
+    width: 10px;
+  }
+  .sideLink {
+    align-self: center;
+    font-weight: bold;
+    font-size: smaller;
+  }
+
 }
 
 canvas {
